@@ -1,0 +1,113 @@
+%Schriftgrˆﬂe, Layout, Papierformat, Art des Dokumentes
+\documentclass[12pt,oneside,a4paper]{scrartcl}
+
+%Einstellungen der Seitenr‰nder
+\usepackage[left=3cm,right=2cm,top=2cm,bottom=2cm,includeheadfoot]{geometry}
+
+\usepackage{lastpage}
+
+%neue Rechtschreibung
+\usepackage{ngerman}
+
+%Umlaute ermˆglichen
+\usepackage[latin1]{inputenc}
+
+%Kopf- und Fuﬂzeile
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+
+%Kopfzeile links bzw. innen
+\fancyhead[L]{BMV Labor 1}
+%Kopfzeile mittig
+\fancyhead[C]{Filzmaier Josef, Michael Sieberer}
+%Kopfzeile rechts bzw. auﬂen
+\fancyhead[R]{\today}
+%Linie oben
+\renewcommand{\headrulewidth}{0.5pt}
+
+%Fuﬂzeile rechts bzw. auﬂen
+\fancyfoot[R]{\thepage/\pageref{LastPage}}
+%Fuﬂzeile links
+\fancyfoot[L]{Matr.Nr.:1030462, 1531366}
+%Linie unten
+\renewcommand{\footrulewidth}{0.5pt}
+
+\begin{document}
+
+\section{Exercise 1 - Image stitching}
+
+Two images from two different perspectives containing the same chess board are taken with two different cameras (Focus length $12.5mm$ and $6.5mm$).
+Four key locations within the chess board are chosen in the first image which are then mapped to points within the second image.
+Several scenarios are evaluated:
+\begin{itemize}
+ \item All four points are corresponding within the chess board over a large area
+ \item All four points are corresponding within the chess board over a small area
+ \item One of the points is chosen differently within image one than in image two
+ \item All points are on one line except for one
+\end{itemize}
+
+\section{Exercise 2 - Auto Focus}
+
+In this exercise we had to take a sequence of $N=10$ images with linearly varying focus and the determine which image has the best focus option.
+In order to solve this task we implemented the following idea:
+
+\begin{itemize}
+ \item Convert the colored image to the corresponding grey value image
+ \item Calculate the histogram of the grey value image
+ \item Sort the histogram values decreasingly
+ \item Sum up the first $1000$ elements of the sorted histogram and normalize
+\end{itemize}
+
+\section{Exercise 3 - Sensor Dynamics}
+
+In this exercise a black and white colored disk with an embedded EMT logo is spun up using an electronic motor.
+The goal is to take a photo of the EMT logo while the disk is spinning.
+This is done using a LED flashlight which is triggered by a rotation sensor and synchronously flashes the disk.
+Therefore the logo is perceived static because the light highlights the disk always when the logo is at the same place.
+
+\subsection{Global Shutter}
+
+A global shutter camera measures light intensity with all pixel sensors at the same point in time.
+
+\subsection{Rolling Shutter}
+
+A rolling shutter camera measures light intensity line by line.
+This can cause certain artifacts with fast moving objects.
+
+\section{Exercise 4 - Perspective Invariants}
+
+In this exercise we take a photo of an prepared image with four points which have a certain distance to each other.
+The points are prepared to easily be detected by a \texttt{cornerMark} function which is given in the framework.
+Two different cameras with focal lenth of $4.3mm$ and $12.5mm$ were used.\\
+
+\noindent
+The claim to verify is that formula \ref{eq:cross_ratio} is independent of the perspective the picture is taken from as well as independent of the used focal length.
+
+\begin{equation}
+ CR_{A,B,C,D} = \frac{\overline{AC}}{\overline{BC}} : \frac{\overline{AD}}{\overline{BD}}
+ \label{eq:cross_ratio}
+\end{equation}
+
+\subsection{Measuring by hand}
+
+\begin{minipage}{0.48\textwidth}
+  $$\overline{AB} = 42mm$$
+  $$\overline{BC} = 82mm$$
+  $$\overline{CD} = 123mm$$
+\end{minipage}
+\begin{minipage}{0.48\textwidth}
+  $$\overline{AC} = 123mm$$
+  $$\overline{BD} = 205mm$$
+  $$\overline{AD} = 246mm$$
+\end{minipage}
+
+\hspace{0.5mm}
+
+$$CR_{A,B,C,D} = \frac{\overline{AC}}{\overline{BC}} : \frac{\overline{AD}}{\overline{BD}} = \frac{123mm}{82mm} : \frac{246mm}{205mm} = 1.25$$
+
+\subsection{Measuring using the cornerMark Matlab algorithm}
+
+
+
+\end{document}
