@@ -488,7 +488,7 @@ end
 \end{lstlisting}
 
 Figure \ref{fig:autofocus_hist} clearly shows that the image with the best focus is the image with a focus of $3mm$.
-When comparing all the images this result satisfied our expectations as we already beforehand concluded that this picture looks like it is best in focus.
+When comparing all the images this result satisfied our expectations as we already beforehand considered that this picture looks like it is best focussed one.
 
 \begin{figure}[ht!]
  \centering
@@ -538,11 +538,55 @@ Therefore the logo is perceived static because the light highlights the disk alw
 \subsubsection{Global Shutter}
 
 A global shutter camera measures light intensity with all pixel sensors at the same point in time.
+Figure \ref{fig:free_trigger_cont_light} shows the captured EMT logo on the disc using a global shutter with continuous lightning.
+
+\begin{figure}[ht!]
+ \centering
+ \includegraphics[width=.8\linewidth]{./Bildg_Messtechnik_Lab/SensorDynamics/free_trigger_cont_light.png}
+ \caption{Free trigger with continued lightning}
+ \label{fig:free_trigger_cont_light}
+\end{figure}
+
+Figure \ref{fig:triggered_9us} shows the rotating disc captured at a very high framerate with the synchronized LED flashlight currently lighting up the logo.
+The exposure time is set to only $9\mu s$.
+The image is so small because we defined an area of interest which allowed the high framerate capture over USB.
+
+\begin{figure}[ht!]
+ \centering
+ \includegraphics[width=.8\linewidth]{./Bildg_Messtechnik_Lab/SensorDynamics/triggered_9us.png}
+ \caption{synchronously triggered light with $9\mu s$ expsoure time}
+ \label{fig:triggered_9us}
+\end{figure}
+
+Figure \ref{fig:triggered_light_189ms_exp} shows a similar capture of the EMT logo with a synchronous triggered flashlight but with a much longer exposure time of $18.9ms$.
+
+\begin{figure}[ht!]
+ \centering
+ \includegraphics[width=.8\linewidth]{./Bildg_Messtechnik_Lab/SensorDynamics/triggered_light_18_9ms_exp.png}
+ \caption{Triggered light with $18.9ms$ exposure time}
+ \label{fig:triggered_light_189ms_exp}
+\end{figure}
 
 \subsubsection{Rolling Shutter}
 
 A rolling shutter camera measures light intensity line by line.
-This can cause certain artifacts with fast moving objects.
+This can cause certain artifacts when capturing fast moving objects as dominantly seen in Figure \ref{rolling_shuter_cont_light}.
+Figure \ref{fig:triggered_light_rolling_shutter} shows a rolling shutter when using triggered light to capture the EMT logo.
+
+\begin{figure}[ht!]
+ \centering
+ \includegraphics[width=.8\linewidth]{./Bildg_Messtechnik_Lab/SensorDynamics/rolling_shuter_cont_light.png}
+ \caption{Rolling shutter with continuous lightning}
+ \label{fig:rolling_shuter_cont_light}
+\end{figure}
+
+\begin{figure}[ht!]
+ \centering
+ \includegraphics[width=.8\linewidth]{./Bildg_Messtechnik_Lab/SensorDynamics/triggered_light_rolling_shutter.png}
+ \caption{Triggered light with $18.9ms$ exposure time}
+ \label{fig:triggered_light_rolling_shutter}
+\end{figure}
+
 
 \pagebreak
 \section{Perspective Invariants}
