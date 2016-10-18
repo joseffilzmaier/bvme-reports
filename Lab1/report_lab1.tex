@@ -439,7 +439,7 @@ different image sequences and discuss your results.
 
 \subsection{Solution}
 
-In order to solve this task we implemented the following 4-step idea:
+In order to solve this task we implemented the following four-step idea for all $N$ images:
 
 \begin{itemize}
  \item Convert the colored image to the corresponding grey value image
@@ -448,7 +448,17 @@ In order to solve this task we implemented the following 4-step idea:
  \item Sum up the first $1000$ elements of the sorted histogram and normalize
 \end{itemize}
 
-\begin{lstlisting}[label="lst:autofocus", caption=Matlab script for calculating best focus value]
+Figure \ref{fig:alltakenimages} shows a grid of the $N=10$ taken images of the scene with varying focus.
+Listing \ref{lst:autofocus} shows the implementation we did end up with.
+All lines of code before line 12 are for initializing the computation.
+The for loop on line $12$ then iterates over all the $N=10$ input images which were taken in the lab.
+In line $15$ the Matlab function for converting the colored image into its grey values is called.
+We did this so that we do not have to cope with all three color channels and the result should not be dependent on the colors.
+The most important function call is in line $18$ which calculates the gradient of the image using the ``CentralDifference'' algorithm.
+Using the gradient image we can determine how sharp edges are within the image.
+We then sort the values descendingly in line $20$ and store them within the \lstinline{focVal} variable.
+
+\begin{lstlisting}[label=lst:autofocus, caption=Matlab script for calculating best focus value]
 N = 1000;
 
 % directory that contains the image sequence
@@ -477,6 +487,32 @@ for i = 1:length(img_names)
 end
 \end{lstlisting}
 
+Figure \ref{fig:autofocus_hist} clearly shows that the image with the best focus is the image with a focus of $3mm$.
+When comparing all the images this result satisfied our expectations as we already beforehand concluded that this picture looks like it is best in focus.
+
+\begin{figure}[ht!]
+ \centering
+ \includegraphics{./Bildg_Messtechnik_Lab/Autofokus/html/main_01.eps}
+ \caption{Overview over the calculated focus value for all Images}
+ \label{fig:autofocus_hist}
+\end{figure}
+
+
+\begin{figure}
+\centering
+\begin{tabular}{ccc}
+ \includegraphics[width=48mm]{./Bildg_Messtechnik_Lab/Autofokus/images/image_01_5.png} & \includegraphics[width=48mm]{./Bildg_Messtechnik_Lab/Autofokus/images/image_01_75.png} & \includegraphics[width=48mm]{./Bildg_Messtechnik_Lab/Autofokus/images/image_02_0.png}\\
+(a) $1.5mm$ & (b) $1.75mm$ & (c) $2.0mm$\\[6pt]
+ \includegraphics[width=48mm]{./Bildg_Messtechnik_Lab/Autofokus/images/image_02_5.png} & \includegraphics[width=48mm]{./Bildg_Messtechnik_Lab/Autofokus/images/image_03.png} & \includegraphics[width=48mm]{./Bildg_Messtechnik_Lab/Autofokus/images/image_04.png}\\
+(d) $2.5mm$& (e) $3.0mm$ & (f) $4.0mm$\\[6pt]
+ \includegraphics[width=48mm]{./Bildg_Messtechnik_Lab/Autofokus/images/image_05.png} & \includegraphics[width=48mm]{./Bildg_Messtechnik_Lab/Autofokus/images/image_07_5.png} & \includegraphics[width=48mm]{./Bildg_Messtechnik_Lab/Autofokus/images/image_10.png}\\
+(g) $5.0mm$ & (h) $7.5mm$ & (i) $10mm$\\[6pt]
+ \multicolumn{3}{c}{\includegraphics[width=48mm]{./Bildg_Messtechnik_Lab/Autofokus/images/image_inf.png}} \\[6pt]
+ \multicolumn{3}{c}{(j) $\rightarrow\infty$}
+\end{tabular}
+\caption{All 10 taken images of the scene}
+\label{fig:alltakenimages}
+\end{figure}
 
 \pagebreak
 
