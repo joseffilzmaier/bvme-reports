@@ -51,6 +51,7 @@ a4paper,     %% defines the paper size: a4paper (default), a5paper, letterpaper,
 \usepackage{listings}
 \usepackage{color} %red, green, blue, yellow, cyan, magenta, black, white
 \usepackage{courier}
+\usepackage{float}
 
 %%% babel: language set (can cause some conflicts with package ngerman)
 %%%        use it only for multi-language documents or non-german ones
@@ -540,9 +541,9 @@ Therefore the logo is perceived static because the light highlights the disk alw
 A global shutter camera measures light intensity with all pixel sensors at the same point in time.
 Figure \ref{fig:free_trigger_cont_light} shows the captured EMT logo on the disc using a global shutter with continuous lightning.
 
-\begin{figure}[ht!]
+\begin{figure}[H]
  \centering
- \includegraphics[width=.8\linewidth]{./Bildg_Messtechnik_Lab/SensorDynamics/free_trigger_cont_light.png}
+ \includegraphics[width=.6\linewidth]{./Bildg_Messtechnik_Lab/SensorDynamics/free_trigger_cont_light.png}
  \caption{Free trigger with continued lightning}
  \label{fig:free_trigger_cont_light}
 \end{figure}
@@ -551,18 +552,18 @@ Figure \ref{fig:triggered_9us} shows the rotating disc captured at a very high f
 The exposure time is set to only $9\mu s$.
 The image is so small because we defined an area of interest which allowed the high framerate capture over USB.
 
-\begin{figure}[ht!]
+\begin{figure}[H]
  \centering
- \includegraphics[width=.8\linewidth]{./Bildg_Messtechnik_Lab/SensorDynamics/triggered_9us.png}
+ \includegraphics[width=.6\linewidth]{./Bildg_Messtechnik_Lab/SensorDynamics/triggered_9us.png}
  \caption{synchronously triggered light with $9\mu s$ expsoure time}
  \label{fig:triggered_9us}
 \end{figure}
 
 Figure \ref{fig:triggered_light_189ms_exp} shows a similar capture of the EMT logo with a synchronous triggered flashlight but with a much longer exposure time of $18.9ms$.
 
-\begin{figure}[ht!]
+\begin{figure}[H]
  \centering
- \includegraphics[width=.8\linewidth]{./Bildg_Messtechnik_Lab/SensorDynamics/triggered_light_18_9ms_exp.png}
+ \includegraphics[width=.6\linewidth]{./Bildg_Messtechnik_Lab/SensorDynamics/triggered_light_18_9ms_exp.png}
  \caption{Triggered light with $18.9ms$ exposure time}
  \label{fig:triggered_light_189ms_exp}
 \end{figure}
@@ -570,19 +571,20 @@ Figure \ref{fig:triggered_light_189ms_exp} shows a similar capture of the EMT lo
 \subsubsection{Rolling Shutter}
 
 A rolling shutter camera measures light intensity line by line.
-This can cause certain artifacts when capturing fast moving objects as dominantly seen in Figure \ref{rolling_shuter_cont_light}.
-Figure \ref{fig:triggered_light_rolling_shutter} shows a rolling shutter when using triggered light to capture the EMT logo.
+This can cause certain artifacts when capturing fast moving objects as dominantly seen in Figure \ref{fig:rolling_shuter_cont_light}.
 
-\begin{figure}[ht!]
+\begin{figure}[H]
  \centering
- \includegraphics[width=.8\linewidth]{./Bildg_Messtechnik_Lab/SensorDynamics/rolling_shuter_cont_light.png}
+ \includegraphics[width=.6\linewidth]{./Bildg_Messtechnik_Lab/SensorDynamics/rolling_shuter_cont_light.png}
  \caption{Rolling shutter with continuous lightning}
  \label{fig:rolling_shuter_cont_light}
 \end{figure}
 
-\begin{figure}[ht!]
+Figure \ref{fig:triggered_light_rolling_shutter} shows a rolling shutter when using triggered light to capture the EMT logo.
+
+\begin{figure}[H]
  \centering
- \includegraphics[width=.8\linewidth]{./Bildg_Messtechnik_Lab/SensorDynamics/triggered_light_rolling_shutter.png}
+ \includegraphics[width=.6\linewidth]{./Bildg_Messtechnik_Lab/SensorDynamics/triggered_light_rolling_shutter.png}
  \caption{Triggered light with $18.9ms$ exposure time}
  \label{fig:triggered_light_rolling_shutter}
 \end{figure}
@@ -613,13 +615,16 @@ viewing conditions and perform the following tasks:
 
 \subsection{Solution}
 
-In this exercise we take a photo of an prepared image with four points which have a certain distance to each other.
-The points are prepared to easily be detected by a cornerMark function which is given in the framework.
-Two different cameras with focal lenth of $4.3mm$ and $12.5mm$ were used.\\
-
+In this exercise we take photos of a $CR$-target which contains four points that have a certain distance to each other.
+The points are prepared to easily be detected by a \lstinline{cornerMark} function which is given by the framework.
+Two different cameras with focal lenth of $4.3mm$ and $12.5mm$ were used.
+\\
 The claim to verify is that formula \ref{eq:cross_ratio} is independent of the perspective the picture is taken from as well as independent of the used focal length.
 
 \subsubsection{Measuring by hand}
+
+The first step we took to verify this claim is to measure the distance of the points on the targets using a ruler and calculate the ideal values which should be reached by the taken images.
+Formula \ref{eq:measure_by_hand} calculates the ideal Cross Ratio.
 
 \begin{minipage}{0.48\textwidth}
   $$\overline{AB} = 42mm$$
@@ -634,11 +639,42 @@ The claim to verify is that formula \ref{eq:cross_ratio} is independent of the p
 
 \hspace{0.5mm}
 
-$$CR_{A,B,C,D} = \frac{\overline{AC}}{\overline{BC}} : \frac{\overline{AD}}{\overline{BD}} = \frac{123mm}{82mm} : \frac{246mm}{205mm} = 1.25$$
+\begin{equation}
+ CR_{A,B,C,D} = \frac{\overline{AC}}{\overline{BC}} : \frac{\overline{AD}}{\overline{BD}} = \frac{123mm}{82mm} : \frac{246mm}{205mm} = 1.25
+ \label{eq:measure_by_hand}
+\end{equation}
 
 \subsubsection{Measuring using the cornerMark Matlab algorithm}
 
+After this step we took $N = 5$ (Should be enough to calculate a good approximation) photos of different perspectives with different focal lengths.
+These photos can be seen in Figure \ref{fig:cornermark_images}.
+The top row of the target was chosen in this case.
+Listing \ref{lst:main_cross_ratio} shows how the calculation was achieved.
+Line $23$ iterates over all images.
+Using the \lstinline{markCorners(...)} function given by the framework the points can be chosen via a graphical user interface.
+If one point is set by the gui the markCorners function tries to find the middle of the square.
+Then, the $CR$ is calculated using the \lstinline{CrossRatio(...)} function of which the implementation can be seen in Listing \ref{lst:crossratio}.
+Finally the average and the standard deviation of the cross function matrix are calculated using the \lstinline{mean(...)} and \lstinline{std(...)} Matlab functions.
 
+\lstinputlisting[label=lst:main_cross_ratio, caption=Main script]{./Bildg_Messtechnik_Lab/CrossRatio/main.m}
+
+\lstinputlisting[label=lst:crossratio, caption=Cross Ratio function implementation]{./Bildg_Messtechnik_Lab/CrossRatio/CrossRatio.m}
+
+\begin{figure}[ht!]
+\centering
+\begin{tabular}{ccc}
+ \includegraphics[width=48mm]{./Bildg_Messtechnik_Lab/CrossRatio/images/image_a1.png} & \includegraphics[width=48mm]{./Bildg_Messtechnik_Lab/CrossRatio/images/image_a2.png} & \includegraphics[width=48mm]{./Bildg_Messtechnik_Lab/CrossRatio/images/image_a3.png}\\
+(a) $4.3mm$ & (b) $4.3mm$ & (c) $4.3mm$\\[6pt]
+ \includegraphics[width=48mm]{./Bildg_Messtechnik_Lab/CrossRatio/images/image_a4.png} & \includegraphics[width=48mm]{./Bildg_Messtechnik_Lab/CrossRatio/images/image_a5.png} & \includegraphics[width=48mm]{./Bildg_Messtechnik_Lab/CrossRatio/images/image_b1.png}\\
+(d) $4.3mm$& (e) $4.3mm$ & (f) $12.5mm$\\[6pt]
+ \includegraphics[width=48mm]{./Bildg_Messtechnik_Lab/CrossRatio/images/image_b2.png} & \includegraphics[width=48mm]{./Bildg_Messtechnik_Lab/CrossRatio/images/image_b3.png} & \includegraphics[width=48mm]{./Bildg_Messtechnik_Lab/CrossRatio/images/image_b4.png}\\
+(g) $12.5mm$ & (h) $12.5mm$ & (i) $12.5mm$\\[6pt]
+ \multicolumn{3}{c}{\includegraphics[width=48mm]{./Bildg_Messtechnik_Lab/CrossRatio/images/image_b5.png}} \\[6pt]
+ \multicolumn{3}{c}{(j) $\rightarrow\infty$}
+\end{tabular}
+\caption{All 10 taken images of the scene}
+\label{fig:cornermark_images}
+\end{figure}
 
 %%%
 %%% end main document
