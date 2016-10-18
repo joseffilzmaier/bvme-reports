@@ -35,23 +35,6 @@ a4paper,     %% defines the paper size: a4paper (default), a5paper, letterpaper,
 12pt         %% set default font size to 12 point
 ]{scrartcl}  %% article, see KOMA documentation (scrguide.dvi)
 
-\newcommand{\sidebysidepic}[6]{
-\begin{figure}[ht!]%
-\begin{subfigure}{.5\textwidth}%
-  \centering%
-  \includegraphics[width=.8\linewidth]{#1}%
-  \caption{#2}%
-\end{subfigure}%
-\begin{subfigure}{.5\textwidth}%
-  \centering%
-  \includegraphics[width=.8\linewidth]{#3}%
-  \caption{#4}%
-\end{subfigure}%
-\caption{#5}%
-\label{#6}%
-\end{figure}%
-}
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%
 %%% packages
@@ -65,6 +48,9 @@ a4paper,     %% defines the paper size: a4paper (default), a5paper, letterpaper,
 \usepackage[english]{babel} 
 \usepackage{tocloft}
 \usepackage{subcaption}
+\usepackage{listings}
+\usepackage{color} %red, green, blue, yellow, cyan, magenta, black, white
+\usepackage{courier}
 
 %%% babel: language set (can cause some conflicts with package ngerman)
 %%%        use it only for multi-language documents or non-german ones
@@ -265,6 +251,41 @@ Michael Sieberer (1531366)}
 \renewcommand*{\thesubsection}{\arabic{section}.\arabic{subsection}}
 \setlength{\cftsecnumwidth}{6.0em}
 \setlength\parindent{0pt}
+\definecolor{mygreen}{RGB}{28,172,0} % color values Red, Green, Blue
+\definecolor{mylilas}{RGB}{170,55,241}
+\lstset{language=Matlab,%
+    basicstyle=\ttfamily\footnotesize,breaklines=true,
+    breaklines=true,%
+    morekeywords={matlab2tikz},
+    keywordstyle=\color{blue},%
+    morekeywords=[2]{1}, keywordstyle=[2]{\color{black}},
+    identifierstyle=\color{black},%
+    stringstyle=\color{mylilas},
+    commentstyle=\color{mygreen},%
+    showstringspaces=false,%without this there will be a symbol in the places where there is a space
+    numbers=left,%
+    numberstyle={\tiny \color{black}},% size of the numbers
+    numbersep=9pt, % this defines how far the numbers are from the text
+    emph=[1]{for,end,break},emphstyle=[1]\color{red}, %some words to emphasise
+    captionpos=b,
+    %emph=[2]{word1,word2}, emphstyle=[2]{style},    
+}
+\newcommand{\sidebysidepic}[6]{
+\begin{figure}[ht!]%
+\begin{subfigure}{.5\textwidth}%
+  \centering%
+  \includegraphics[width=.8\linewidth]{#1}%
+  \caption{#2}%
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}%
+  \centering%
+  \includegraphics[width=.8\linewidth]{#3}%
+  \caption{#4}%
+\end{subfigure}%
+\caption{#5}%
+\label{#6}%
+\end{figure}%
+}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%
@@ -320,65 +341,105 @@ The target is the chess board seen in both pictures of each focal length.
 
 Corners within the chess board were chosen as unique locations to stitch the two images.
 At first four unique image locations within the target are chosen in the first image.
-These locations are mapped onto the second image with variyng accuracy.
-Several scenarios are evaluated:
+The corresponding points within the second image are chosen directly afterwards.
+Listing \ref{lst:panoramastitching} shows the implementation of the task in MatLab.
+The function \lstinline{PanoramaStitching(...)} shown at the end in Listing \ref{lst:panoramastitching} is the heart of the algorithm.
+It uses the positional information of the four points to calculate a distorted version of image two and moves it to match the points of image one.
+
+\lstinputlisting[caption=Matlab Code, label=lst:panoramastitching]{./Bildg_Messtechnik_Lab/PanoramaStitching/main.m}
+
+There are several options to choose the points within the target.
+Some ideas and its results are discussed in the following sections.
+
 \subsubsection{All points are corresponding within the target over a large area}
 
-\begin{figure}[ht!]
- \centering
- \includegraphics[scale=0.5]{./Bildg_Messtechnik_Lab/PanoramaStitching/fig1.png}
- \label{fig:largeareastitch12.5mm}
- \caption{Stitched image with points chosen over large area ($12.5mm$)}
-\end{figure}
+At first a very obvious choice is taken: Use four corner points of the target in each image.
+The results of this approach are quite impressive.
+Figure \ref{fig:largeareastitch} shows that the two images are matching very well.
+The chosen points can be seen within the target marked as red.
+This can especially be seen on the edges of the concrete wall where the target is mounted as they are fitting almost perfectly over their whole length.
+When looking at the tripod to the right one can see that distortion gets larger the further away from the image middle we analyze.
+The tripod looks like it has a small crack.
+Also one can recognize some color mismatch at the stitching points which is to be expected when taking pictures from different angles without calculating som sort of mean value for the colors.
 
-\begin{figure}[ht!]
- \centering
- \includegraphics[scale=0.5]{./Bildg_Messtechnik_Lab/PanoramaStitching/figb1.png}
- \label{fig:largeareastitch6.5mm}
- \caption{Stitched image with points chosen over large area ($6.5mm$)}
-\end{figure}
+\sidebysidepic{./Bildg_Messtechnik_Lab/PanoramaStitching/fig1.png}
+{$12.5mm$}
+{./Bildg_Messtechnik_Lab/PanoramaStitching/figb1.png}
+{$6.5mm$}
+{Stitched image with points chosen over large area}
+{fig:largeareastitch}
 
 \subsubsection{All points are corresponding within the target over a small area}
 
-\begin{figure}[ht!]
- \centering
- \includegraphics[scale=0.5]{./Bildg_Messtechnik_Lab/PanoramaStitching/fig2.png}
- \label{fig:smallareastitch12.5mm}
- \caption{Stitched image with points chosen over small area ($12.5mm$)}
-\end{figure}
+As a second experiment we chose the points very close together.
+The proximitiy of the points can be seen within figure Figure \ref{fig:smallareastitch}, as they just surround one black square within the target.
+This approach results in a much more variying scenario.
+Discretizing errors of the camera are much smaller when focussing on a larger area then they are in smaller areas.
+When getting faulty information the \lstinline{PanoramaStiching(...)} algorithm can not perform as well as it does with higher qualtiy information.
+Therefore the edges are not matching as well.
 
-\begin{figure}[ht!]
- \centering
- \includegraphics[scale=0.5]{./Bildg_Messtechnik_Lab/PanoramaStitching/figb2.png}
- \label{fig:smallareastitch6.5mm}
- \caption{Stitched image with points chosen over small area ($6.5mm$)}
-\end{figure}
+\sidebysidepic{./Bildg_Messtechnik_Lab/PanoramaStitching/fig2.png}
+{$12.5mm$}
+{./Bildg_Messtechnik_Lab/PanoramaStitching/figb2.png}
+{$6.5mm$}
+{Stitched image with points chosen over small area}
+{fig:smallareastitch}
 
 \subsubsection{One of the points is chosen differently in image two}
 
-\begin{figure}[ht!]
- \centering
- \includegraphics[scale=0.5]{./Bildg_Messtechnik_Lab/PanoramaStitching/fig3.png}
- \label{fig:differentareastitch12.5mm}
- \caption{Stitched image with points chosen over large area ($12.5mm$)}
-\end{figure}
+Next up is an experiment where we deliberately chose one point wrong.
+In this case the algorithm distorts the image in a way which is obviously wrong.
+The results can be seen in Figure \ref{fig:differentareastitch}.
+As we chose to move the lower left point further to the right then we were supposed to, the algorithm distorted the second image in a similar way.
+The bottom part of the image was clinched while the top part looks like they would be fitting pretty nicely, as the top points were chosen rightfully.
+
+\sidebysidepic{./Bildg_Messtechnik_Lab/PanoramaStitching/fig3.png}
+{$12.5mm$}
+{./Bildg_Messtechnik_Lab/PanoramaStitching/figb3.png}
+{$6.5mm$}
+{Stitched image with points chosen over small area}
+{fig:differentareastitch}
+
+\subsubsection{An arbitrary constellation of corresponding points}
+
+The last two experiments were only performed with the $6.5mm$ focus length camera.
+A seemingly arbitrary but in both cases equally chosen set of points is used to calculate the stitch.
+Figure \ref{fig:arbitraryareastitch} shows the result.
+The image is stretched a bit too much in its bottom part which is due to discretizing errors of the camera, but otherwise the result looks quite good.
 
 \begin{figure}[ht!]
  \centering
- \includegraphics[scale=0.5]{./Bildg_Messtechnik_Lab/PanoramaStitching/figb2.png}
- \label{fig:differentareastitch6.5mm}
- \caption{Stitched image with points chosen over large area ($6.5mm$)}
+ \includegraphics[scale=0.4]{./Bildg_Messtechnik_Lab/PanoramaStitching/figb4.png}
+ \caption{Stitched image with arbitrary points ($6.5mm$)}
+ \label{fig:arbitraryareastitch}
 \end{figure}
 
 \subsubsection{All points are on one line except for one}
-\subsubsection{An arbitrary constellation of corresponding points}
+
+At last all points are chosen within a line in the first image while in the second image the last one is chosen very far to othe right.
+The algorithm has a hard time calculating the right distortion for this constellation as seen in Figure \ref{fig:lineareastitch}.
+
+\begin{figure}[ht!]
+ \centering
+ \includegraphics[scale=0.4]{./Bildg_Messtechnik_Lab/PanoramaStitching/figb5.png}
+ \caption{Stitched image with points in a line except for one ($6.5mm$)}
+ \label{fig:lineareastitch}
+\end{figure}
 
 \pagebreak
 
 \section{Auto Focus}
 
-In this exercise we had to take a sequence of $N=10$ images with linearly varying focus and the determine which image has the best focus option.
-In order to solve this task we implemented the following idea:
+\subsection{Problem statement}
+
+Take a sequence of about $N = 10$ images of a static scene using a linearly varying focus parameter of the
+provided camera. Determine scene properties which make the scene well suited for an auto-focus algorithm.
+Develop a MATLAB script to determine the best focus image out of this sequence. Repeat your analysis with
+different image sequences and discuss your results.
+
+\subsection{Solution}
+
+In order to solve this task we implemented the following 4-step idea:
 
 \begin{itemize}
  \item Convert the colored image to the corresponding grey value image
@@ -387,20 +448,62 @@ In order to solve this task we implemented the following idea:
  \item Sum up the first $1000$ elements of the sorted histogram and normalize
 \end{itemize}
 
+\begin{lstlisting}[label="lst:autofocus", caption=Matlab script for calculating best focus value]
+N = 1000;
+
+% directory that contains the image sequence
+img_dir = 'images';
+img_type = '.png';
+img_names = dir([img_dir '/*' img_type]);
+
+imshowD = @(img) imshow(im2uint8(img));
+focVal = [];
+focName = [];
+
+for i = 1:length(img_names)
+    img_name = img_names(i).name;
+    img = imread([img_dir '/' img_name]);
+    imgG = rgb2gray(img);
+    imgG = im2double(imgG);
+    
+    [grd,~] = imgradient(imgG,'CentralDifference');
+    
+    grdS = sort(grd,'descend');
+    
+    focusInd = sum(grdS(1:N)) / N;
+    fprintf('%s - %d\n', img_name, focusInd);
+    
+    focVal = [focVal, focusInd];
+end
+\end{lstlisting}
+
+
 \pagebreak
 
 \section{Sensor Dynamics}
+
+\subsection{Problem statement}
+
+You are required to acquire an image of a detail on a rotating disc. Perform the following tasks:
+
+\begin{itemize}
+ \item Find a suitable acquisition setup (camera and illumination) using the provided camera. Investigate the use of different shutter modes.
+ \item Use an integrating sensor and synchronise your light source and the rotating disc. Vary the parameters of your setup.
+ \item Compare and discuss your results.
+\end{itemize}
+
+\subsection{Solution}
 
 In this exercise a black and white colored disk with an embedded EMT logo is spun up using an electronic motor.
 The goal is to take a photo of the EMT logo while the disk is spinning.
 This is done using a LED flashlight which is triggered by a rotation sensor and synchronously flashes the disk.
 Therefore the logo is perceived static because the light highlights the disk always when the logo is at the same place.
 
-\subsection{Global Shutter}
+\subsubsection{Global Shutter}
 
 A global shutter camera measures light intensity with all pixel sensors at the same point in time.
 
-\subsection{Rolling Shutter}
+\subsubsection{Rolling Shutter}
 
 A rolling shutter camera measures light intensity line by line.
 This can cause certain artifacts with fast moving objects.
@@ -408,19 +511,35 @@ This can cause certain artifacts with fast moving objects.
 \pagebreak
 \section{Perspective Invariants}
 
-In this exercise we take a photo of an prepared image with four points which have a certain distance to each other.
-The points are prepared to easily be detected by a cornerMark function which is given in the framework.
-Two different cameras with focal lenth of $4.3mm$ and $12.5mm$ were used.\\
+\subsection{Problem statement}
 
-\noindent
-The claim to verify is that formula \ref{eq:cross_ratio} is independent of the perspective the picture is taken from as well as independent of the used focal length.
+Investigate the Cross Ratio $(CR)$ of four co-linear points $A, B, C,$ and $D$ as given by
 
 \begin{equation}
  CR_{A,B,C,D} = \frac{\overline{AC}}{\overline{BC}} : \frac{\overline{AD}}{\overline{BD}}
  \label{eq:cross_ratio}
 \end{equation}
 
-\subsection{Measuring by hand}
+The $CR$ is invariant under perspective projections. Use a CR-Target to acquire $N = 10$ images under varying
+viewing conditions and perform the following tasks:
+
+\begin{itemize}
+ \item Extract the required points $A, B, C,$ and $D$ using a corner detector.
+ \item Complete the MATLAB function \texttt{CrossRatio.m} to measure the $CR$.
+ \item Determine the histogram, mean-value, and standard deviation of the $CR$ over all images.
+ \item Visualise and discuss your results.
+\end{itemize}
+
+
+\subsection{Solution}
+
+In this exercise we take a photo of an prepared image with four points which have a certain distance to each other.
+The points are prepared to easily be detected by a cornerMark function which is given in the framework.
+Two different cameras with focal lenth of $4.3mm$ and $12.5mm$ were used.\\
+
+The claim to verify is that formula \ref{eq:cross_ratio} is independent of the perspective the picture is taken from as well as independent of the used focal length.
+
+\subsubsection{Measuring by hand}
 
 \begin{minipage}{0.48\textwidth}
   $$\overline{AB} = 42mm$$
@@ -437,7 +556,7 @@ The claim to verify is that formula \ref{eq:cross_ratio} is independent of the p
 
 $$CR_{A,B,C,D} = \frac{\overline{AC}}{\overline{BC}} : \frac{\overline{AD}}{\overline{BD}} = \frac{123mm}{82mm} : \frac{246mm}{205mm} = 1.25$$
 
-\subsection{Measuring using the cornerMark Matlab algorithm}
+\subsubsection{Measuring using the cornerMark Matlab algorithm}
 
 
 
