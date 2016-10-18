@@ -4,13 +4,6 @@
 addpath('../Helpers/');
 addpath('../Helpers/CalibToolBox');
 
-% load image and extract cornsers:
-%img = imread('images/image_a1.png');
-%fprintf('Select the four points A,B,C,D !\n');
-%pts=markCorners(img,4);
-
-%cr=CrossRatio(pts);
-
 %%
 img_dir = 'images';
 % type of the image (e.g. jpg)

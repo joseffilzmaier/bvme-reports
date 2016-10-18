@@ -359,7 +359,7 @@ The results of this approach are quite impressive.
 Figure \ref{fig:largeareastitch} shows that the two images are matching very well.
 The chosen points can be seen within the target marked as red.
 This can especially be seen on the edges of the concrete wall where the target is mounted as they are fitting almost perfectly over their whole length.
-When looking at the tripod to the right one can see that distortion gets larger the further away from the image middle we analyze.
+When looking at the tripod to the right one can see that distortion gets larger the further away from the image middle we analyse.
 The tripod looks like it has a small crack.
 Also one can recognize some color mismatch at the stitching points which is to be expected when taking pictures from different angles without calculating som sort of mean value for the colors.
 
@@ -373,8 +373,8 @@ Also one can recognize some color mismatch at the stitching points which is to b
 \subsubsection{All points are corresponding within the target over a small area}
 
 As a second experiment we chose the points very close together.
-The proximitiy of the points can be seen within figure Figure \ref{fig:smallareastitch}, as they just surround one black square within the target.
-This approach results in a much more variying scenario.
+The proximity of the points can be seen within figure Figure \ref{fig:smallareastitch}, as they just surround one black square within the target.
+This approach results in a much more varying scenario.
 Discretizing errors of the camera are much smaller when focussing on a larger area then they are in smaller areas.
 When getting faulty information the \lstinline{PanoramaStiching(...)} algorithm can not perform as well as it does with higher qualtiy information.
 Therefore the edges are not matching as well.
@@ -417,8 +417,8 @@ The image is stretched a bit too much in its bottom part which is due to discret
 
 \subsubsection{All points are on one line except for one}
 
-At last all points are chosen within a line in the first image while in the second image the last one is chosen very far to othe right.
-The algorithm has a hard time calculating the right distortion for this constellation as seen in Figure \ref{fig:lineareastitch}.
+At last all points are chosen within a line in the first image while in the second image the last one is chosen very far to the right.
+The algorithm produces a radially distorted image (See Figure  \ref{fig:lineareastitch}) probably because it is trying to match the last two points which do not correspond at all.
 
 \begin{figure}[ht!]
  \centering
@@ -457,7 +457,7 @@ In line $15$ the Matlab function for converting the colored image into its grey 
 We did this so that we do not have to cope with all three color channels and the result should not be dependent on the colors.
 The most important function call is in line $18$ which calculates the gradient of the image using the ``CentralDifference'' algorithm.
 Using the gradient image we can determine how sharp edges are within the image.
-We then sort the values descendingly in line $20$ and store them within the \lstinline{focVal} variable.
+We then sort the values in descending order in line $20$ and store them within the \lstinline{focVal} variable.
 
 \begin{lstlisting}[label=lst:autofocus, caption=Matlab script for calculating best focus value]
 N = 1000;
@@ -548,14 +548,14 @@ Figure \ref{fig:free_trigger_cont_light} shows the captured EMT logo on the disc
  \label{fig:free_trigger_cont_light}
 \end{figure}
 
-Figure \ref{fig:triggered_9us} shows the rotating disc captured at a very high framerate with the synchronized LED flashlight currently lighting up the logo.
+Figure \ref{fig:triggered_9us} shows the rotating disc captured at a very high frame rate with the synchronized LED flashlight currently lighting up the logo.
 The exposure time is set to only $9\mu s$.
-The image is so small because we defined an area of interest which allowed the high framerate capture over USB.
+The image is so small because we defined an area of interest which allowed the high frame rate capture over USB.
 
 \begin{figure}[H]
  \centering
  \includegraphics[width=.6\linewidth]{./Bildg_Messtechnik_Lab/SensorDynamics/triggered_9us.png}
- \caption{synchronously triggered light with $9\mu s$ expsoure time}
+ \caption{synchronously triggered light with $9\mu s$ exposure time}
  \label{fig:triggered_9us}
 \end{figure}
 
@@ -571,7 +571,7 @@ Figure \ref{fig:triggered_light_189ms_exp} shows a similar capture of the EMT lo
 \subsubsection{Rolling Shutter}
 
 A rolling shutter camera measures light intensity line by line.
-This can cause certain artifacts when capturing fast moving objects as dominantly seen in Figure \ref{fig:rolling_shuter_cont_light}.
+This can cause certain artefacts when capturing fast moving objects as dominantly seen in Figure \ref{fig:rolling_shuter_cont_light}.
 
 \begin{figure}[H]
  \centering
@@ -617,7 +617,7 @@ viewing conditions and perform the following tasks:
 
 In this exercise we take photos of a $CR$-target which contains four points that have a certain distance to each other.
 The points are prepared to easily be detected by a \lstinline{cornerMark} function which is given by the framework.
-Two different cameras with focal lenth of $4.3mm$ and $12.5mm$ were used.
+Two different cameras with focal length of $4.3mm$ and $12.5mm$ were used.
 \\
 The claim to verify is that formula \ref{eq:cross_ratio} is independent of the perspective the picture is taken from as well as independent of the used focal length.
 
@@ -652,13 +652,28 @@ The top row of the target was chosen in this case.
 Listing \ref{lst:main_cross_ratio} shows how the calculation was achieved.
 Line $23$ iterates over all images.
 Using the \lstinline{markCorners(...)} function given by the framework the points can be chosen via a graphical user interface.
-If one point is set by the gui the markCorners function tries to find the middle of the square.
+If one point is set by the GUI the markCorners function tries to find the middle of the square.
 Then, the $CR$ is calculated using the \lstinline{CrossRatio(...)} function of which the implementation can be seen in Listing \ref{lst:crossratio}.
 Finally the average and the standard deviation of the cross function matrix are calculated using the \lstinline{mean(...)} and \lstinline{std(...)} Matlab functions.
 
 \lstinputlisting[label=lst:main_cross_ratio, caption=Main script]{./Bildg_Messtechnik_Lab/CrossRatio/main.m}
 
 \lstinputlisting[label=lst:crossratio, caption=Cross Ratio function implementation]{./Bildg_Messtechnik_Lab/CrossRatio/CrossRatio.m}
+
+Table \ref{tab:cross_ratios} shows that the results are all very close to the measured ideal value.
+The first five entries of the table are the measured $CR$s of the pictures taken by the $4.3mm$ focal length camera and the five following entries represent the $CR$s of the Pictures taken by the $12.5mm$ camera.
+The average result is $1.248$ with a standard deviation of $0.0013$ and is therefore only $0.002$ off of the ideally measured value which is $1.250$.
+So it is save to say that the $CR$ is perspective independent.
+
+\begin{table}[ht!]
+  \centering
+  \begin{tabular}{|c|c|c|c|c||c|c|c|c|c|}\hline
+    1.248 & 1.247 & 1.246 & 1.246 & 1.246 & 1.248 & 1.249 & 1.249 & 1.248 & 1.248\\\hline
+  \end{tabular}
+  \caption{Cross ratios for $4.3mm$ and $12.5mm$ focal length}
+  \label{tab:cross_ratios}
+\end{table}
+
 
 \begin{figure}[ht!]
 \centering
