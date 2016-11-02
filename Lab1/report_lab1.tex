@@ -53,6 +53,8 @@ a4paper,     %% defines the paper size: a4paper (default), a5paper, letterpaper,
 \usepackage{courier}
 \usepackage{float}
 
+\usepackage{siunitx}
+
 %%% babel: language set (can cause some conflicts with package ngerman)
 %%%        use it only for multi-language documents or non-german ones
 %\usepackage[ngerman]{babel}
@@ -156,7 +158,13 @@ a4paper,     %% defines the paper size: a4paper (default), a5paper, letterpaper,
   pdfsubject={Image Stitching, Auto-Focus, Sensor Dynamics, Perspective invariants}, %%
   pdfcreator={Accomplished with LaTeX2e and pdfLaTeX with hyperref-package.}, %% 
   pdfproducer={}, %%
-  pdfkeywords={} %%
+  pdfkeywords={}, %%
+  pdfnewwindow=true,      % links in new PDF window
+  colorlinks=true,       % false: boxed links; true: colored links
+  linkcolor=black,          % color of internal links (change box color with linkbordercolor)
+  citecolor=black,        % color of links to bibliography
+  filecolor=magenta,      % color of file links
+  urlcolor=cyan           % color of external links
 }
 
 
@@ -323,21 +331,21 @@ correspondences.
 \subsection{Solution}
 
 Two images from two different perspectives containing a target are taken with two different cameras.
-Figure \ref{fig:photo12.5mm} shows the photos taken with a focus length of $12.5mm$ while Figure \ref{fig:photo6.5mm} shows the photos taken with a focus length of $6.5mm$.
+Figure \ref{fig:photo12.5mm} shows the photos taken with a focus length of \SI{12.5}{mm} while Figure \ref{fig:photo6.5mm} shows the photos taken with a focus length of \SI{6.5}{mm}.
 The target is the chess board seen in both pictures of each focal length.
 
 \sidebysidepic{./Bildg_Messtechnik_Lab/PanoramaStitching/images/image_1.png}
 {First perspective}
 {./Bildg_Messtechnik_Lab/PanoramaStitching/images/image_2.png}
 {Second perspective}
-{Images capturing target from different perspectives with $12.5mm$ focal length}
+{Images capturing target from different perspectives with \SI{12.5}{mm} focal length}
 {fig:photo12.5mm}
 
 \sidebysidepic{./Bildg_Messtechnik_Lab/PanoramaStitching/images/image_b1.png}
 {First perspective}
 {./Bildg_Messtechnik_Lab/PanoramaStitching/images/image_b2.png}
 {Second perspective}
-{Images capturing target from different perspectives with $6.5mm$ focal length}
+{Images capturing target from different perspectives with \SI{6.5}{mm} focal length}
 {fig:photo6.5mm}
 
 Corners within the chess board were chosen as unique locations to stitch the two images.
@@ -364,9 +372,9 @@ The tripod looks like it has a small crack.
 Also one can recognize some color mismatch at the stitching points which is to be expected when taking pictures from different angles without calculating som sort of mean value for the colors.
 
 \sidebysidepic{./Bildg_Messtechnik_Lab/PanoramaStitching/fig1.png}
-{$12.5mm$}
+{\SI{12.5}{mm}}
 {./Bildg_Messtechnik_Lab/PanoramaStitching/figb1.png}
-{$6.5mm$}
+{\SI{6.5}{mm}}
 {Stitched image with points chosen over large area}
 {fig:largeareastitch}
 
@@ -380,9 +388,9 @@ When getting faulty information the \lstinline{PanoramaStiching(...)} algorithm 
 Therefore the edges are not matching as well.
 
 \sidebysidepic{./Bildg_Messtechnik_Lab/PanoramaStitching/fig2.png}
-{$12.5mm$}
+{\SI{12.5}{mm}}
 {./Bildg_Messtechnik_Lab/PanoramaStitching/figb2.png}
-{$6.5mm$}
+{\SI{6.5}{mm}}
 {Stitched image with points chosen over small area}
 {fig:smallareastitch}
 
@@ -395,15 +403,15 @@ As we chose to move the lower left point further to the right then we were suppo
 The bottom part of the image was clinched while the top part looks like they would be fitting pretty nicely, as the top points were chosen rightfully.
 
 \sidebysidepic{./Bildg_Messtechnik_Lab/PanoramaStitching/fig3.png}
-{$12.5mm$}
+{\SI{12.5}{mm}}
 {./Bildg_Messtechnik_Lab/PanoramaStitching/figb3.png}
-{$6.5mm$}
+{\SI{6.5}{mm}}
 {Stitched image with points chosen over small area}
 {fig:differentareastitch}
 
 \subsubsection{An arbitrary constellation of corresponding points}
 
-The last two experiments were only performed with the $6.5mm$ focus length camera.
+The last two experiments were only performed with the \SI{6.5}{mm} focus length camera.
 A seemingly arbitrary but in both cases equally chosen set of points is used to calculate the stitch.
 Figure \ref{fig:arbitraryareastitch} shows the result.
 The image is stretched a bit too much in its bottom part which is due to discretizing errors of the camera, but otherwise the result looks quite good.
@@ -411,7 +419,7 @@ The image is stretched a bit too much in its bottom part which is due to discret
 \begin{figure}[ht!]
  \centering
  \includegraphics[scale=0.4]{./Bildg_Messtechnik_Lab/PanoramaStitching/figb4.png}
- \caption{Stitched image with arbitrary points ($6.5mm$)}
+ \caption{Stitched image with arbitrary points (\SI{6.5}{mm})}
  \label{fig:arbitraryareastitch}
 \end{figure}
 
@@ -423,7 +431,7 @@ The algorithm produces a radially distorted image (See Figure  \ref{fig:linearea
 \begin{figure}[ht!]
  \centering
  \includegraphics[scale=0.4]{./Bildg_Messtechnik_Lab/PanoramaStitching/figb5.png}
- \caption{Stitched image with points in a line except for one ($6.5mm$)}
+ \caption{Stitched image with points in a line except for one (\SI{6.5}{mm})}
  \label{fig:lineareastitch}
 \end{figure}
 
@@ -488,7 +496,7 @@ for i = 1:length(img_names)
 end
 \end{lstlisting}
 
-Figure \ref{fig:autofocus_hist} clearly shows that the image with the best focus is the image with a focus of $3mm$.
+Figure \ref{fig:autofocus_hist} clearly shows that the image with the best focus is the image with a focus of \SI{3}{m}.
 When comparing all the images this result satisfied our expectations as we already beforehand considered that this picture looks like it is best focussed one.
 
 \begin{figure}[ht!]
@@ -503,11 +511,11 @@ When comparing all the images this result satisfied our expectations as we alrea
 \centering
 \begin{tabular}{ccc}
  \includegraphics[width=48mm]{./Bildg_Messtechnik_Lab/Autofokus/images/image_01_5.png} & \includegraphics[width=48mm]{./Bildg_Messtechnik_Lab/Autofokus/images/image_01_75.png} & \includegraphics[width=48mm]{./Bildg_Messtechnik_Lab/Autofokus/images/image_02_0.png}\\
-(a) $1.5mm$ & (b) $1.75mm$ & (c) $2.0mm$\\[6pt]
+(a) \SI{1.5}{m} & (b) \SI{1.75}{m} & (c) \SI{2.0}{m}\\[6pt]
  \includegraphics[width=48mm]{./Bildg_Messtechnik_Lab/Autofokus/images/image_02_5.png} & \includegraphics[width=48mm]{./Bildg_Messtechnik_Lab/Autofokus/images/image_03.png} & \includegraphics[width=48mm]{./Bildg_Messtechnik_Lab/Autofokus/images/image_04.png}\\
-(d) $2.5mm$& (e) $3.0mm$ & (f) $4.0mm$\\[6pt]
+(d) \SI{2.5}{m}& (e) \SI{3.0}{m} & (f) \SI{4.0}{m}\\[6pt]
  \includegraphics[width=48mm]{./Bildg_Messtechnik_Lab/Autofokus/images/image_05.png} & \includegraphics[width=48mm]{./Bildg_Messtechnik_Lab/Autofokus/images/image_07_5.png} & \includegraphics[width=48mm]{./Bildg_Messtechnik_Lab/Autofokus/images/image_10.png}\\
-(g) $5.0mm$ & (h) $7.5mm$ & (i) $10mm$\\[6pt]
+(g) \SI{5.0}{m} & (h) \SI{7.5}{m} & (i) \SI{10}{m}\\[6pt]
  \multicolumn{3}{c}{\includegraphics[width=48mm]{./Bildg_Messtechnik_Lab/Autofokus/images/image_inf.png}} \\[6pt]
  \multicolumn{3}{c}{(j) $\rightarrow\infty$}
 \end{tabular}
@@ -549,22 +557,22 @@ Figure \ref{fig:free_trigger_cont_light} shows the captured EMT logo on the disc
 \end{figure}
 
 Figure \ref{fig:triggered_9us} shows the rotating disc captured at a very high frame rate with the synchronized LED flashlight currently lighting up the logo.
-The exposure time is set to only $9\mu s$.
+The exposure time is set to only \SI{9}{\mu s}.
 The image is so small because we defined an area of interest which allowed the high frame rate capture over USB.
 
 \begin{figure}[H]
  \centering
  \includegraphics[width=.6\linewidth]{./Bildg_Messtechnik_Lab/SensorDynamics/triggered_9us.png}
- \caption{synchronously triggered light with $9\mu s$ exposure time}
+ \caption{synchronously triggered light with \SI{9}{\mu s} exposure time}
  \label{fig:triggered_9us}
 \end{figure}
 
-Figure \ref{fig:triggered_light_189ms_exp} shows a similar capture of the EMT logo with a synchronous triggered flashlight but with a much longer exposure time of $18.9ms$.
+Figure \ref{fig:triggered_light_189ms_exp} shows a similar capture of the EMT logo with a synchronous triggered flashlight but with a much longer exposure time of \SI{18.9}{ms}.
 
 \begin{figure}[H]
  \centering
  \includegraphics[width=.6\linewidth]{./Bildg_Messtechnik_Lab/SensorDynamics/triggered_light_18_9ms_exp.png}
- \caption{Triggered light with $18.9ms$ exposure time}
+ \caption{Triggered light with \SI{18.9}{ms} exposure time}
  \label{fig:triggered_light_189ms_exp}
 \end{figure}
 
@@ -585,7 +593,7 @@ Figure \ref{fig:triggered_light_rolling_shutter} shows a rolling shutter when us
 \begin{figure}[H]
  \centering
  \includegraphics[width=.6\linewidth]{./Bildg_Messtechnik_Lab/SensorDynamics/triggered_light_rolling_shutter.png}
- \caption{Triggered light with $18.9ms$ exposure time}
+ \caption{Triggered light with \SI{18.9}{ms} exposure time}
  \label{fig:triggered_light_rolling_shutter}
 \end{figure}
 
@@ -617,7 +625,7 @@ viewing conditions and perform the following tasks:
 
 In this exercise we take photos of a $CR$-target which contains four points that have a certain distance to each other.
 The points are prepared to easily be detected by a \lstinline{cornerMark} function which is given by the framework.
-Two different cameras with focal length of $4.3mm$ and $12.5mm$ were used.
+Two different cameras with focal length of \SI{4.3}{mm} and \SI{12.5}{mm} were used.
 \\
 The claim to verify is that formula \ref{eq:cross_ratio} is independent of the perspective the picture is taken from as well as independent of the used focal length.
 
@@ -661,7 +669,7 @@ Finally the average and the standard deviation of the cross function matrix are 
 \lstinputlisting[label=lst:crossratio, caption=Cross Ratio function implementation]{./Bildg_Messtechnik_Lab/CrossRatio/CrossRatio.m}
 
 Table \ref{tab:cross_ratios} shows that the results are all very close to the measured ideal value.
-The first five entries of the table are the measured $CR$s of the pictures taken by the $4.3mm$ focal length camera and the five following entries represent the $CR$s of the Pictures taken by the $12.5mm$ camera.
+The first five entries of the table are the measured $CR$s of the pictures taken by the \SI{4.3}{mm} focal length camera and the five following entries represent the $CR$s of the Pictures taken by the \SI{12.5}{mm} camera.
 The average result is $1.248$ with a standard deviation of $0.0013$ and is therefore only $0.002$ off of the ideally measured value which is $1.250$.
 So it is save to say that the $CR$ is perspective independent.
 
@@ -670,7 +678,7 @@ So it is save to say that the $CR$ is perspective independent.
   \begin{tabular}{|c|c|c|c|c||c|c|c|c|c|}\hline
     1.248 & 1.247 & 1.246 & 1.246 & 1.246 & 1.248 & 1.249 & 1.249 & 1.248 & 1.248\\\hline
   \end{tabular}
-  \caption{Cross ratios for $4.3mm$ and $12.5mm$ focal length}
+  \caption{Cross ratios for \SI{4.3}{mm} and \SI{12.5}{mm} focal length}
   \label{tab:cross_ratios}
 \end{table}
 
@@ -679,11 +687,11 @@ So it is save to say that the $CR$ is perspective independent.
 \centering
 \begin{tabular}{ccc}
  \includegraphics[width=48mm]{./Bildg_Messtechnik_Lab/CrossRatio/images/image_a1.png} & \includegraphics[width=48mm]{./Bildg_Messtechnik_Lab/CrossRatio/images/image_a2.png} & \includegraphics[width=48mm]{./Bildg_Messtechnik_Lab/CrossRatio/images/image_a3.png}\\
-(a) $4.3mm$ & (b) $4.3mm$ & (c) $4.3mm$\\[6pt]
+(a) \SI{4.3}{mm} & (b) \SI{4.3}{mm} & (c) \SI{4.3}{mm}\\[6pt]
  \includegraphics[width=48mm]{./Bildg_Messtechnik_Lab/CrossRatio/images/image_a4.png} & \includegraphics[width=48mm]{./Bildg_Messtechnik_Lab/CrossRatio/images/image_a5.png} & \includegraphics[width=48mm]{./Bildg_Messtechnik_Lab/CrossRatio/images/image_b1.png}\\
-(d) $4.3mm$& (e) $4.3mm$ & (f) $12.5mm$\\[6pt]
+(d) \SI{4.3}{mm}& (e) \SI{4.3}{mm} & (f) \SI{12.5}{mm}\\[6pt]
  \includegraphics[width=48mm]{./Bildg_Messtechnik_Lab/CrossRatio/images/image_b2.png} & \includegraphics[width=48mm]{./Bildg_Messtechnik_Lab/CrossRatio/images/image_b3.png} & \includegraphics[width=48mm]{./Bildg_Messtechnik_Lab/CrossRatio/images/image_b4.png}\\
-(g) $12.5mm$ & (h) $12.5mm$ & (i) $12.5mm$\\[6pt]
+(g) \SI{12.5}{mm} & (h) \SI{12.5}{mm} & (i) \SI{12.5}{mm}\\[6pt]
  \multicolumn{3}{c}{\includegraphics[width=48mm]{./Bildg_Messtechnik_Lab/CrossRatio/images/image_b5.png}} \\[6pt]
  \multicolumn{3}{c}{(j) $\rightarrow\infty$}
 \end{tabular}
