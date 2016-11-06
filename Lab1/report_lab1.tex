@@ -13,11 +13,14 @@ a4paper,     %% defines the paper size: a4paper (default), a5paper, letterpaper,
 % draft,       %% produce only a draft version (mark lines that need manual edition and don't show graphics)
 % 10pt         %% set default font size to 10 point
 % 11pt         %% set default font size to 11 point
-12pt         %% set default font size to 12 point
+11pt         %% set default font size to 12 point
 ]{scrartcl}  %% article, see KOMA documentation (scrguide.dvi)
 
 \input{../report_style}
 
+
+%%% title
+\title{Lab1 - Image Acquisition}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%
@@ -78,7 +81,7 @@ Listing \ref{lst:panoramastitching} shows the implementation of the task in MatL
 The function \lstinline{PanoramaStitching(...)} shown at the end in Listing \ref{lst:panoramastitching} is the heart of the algorithm.
 It uses the positional information of the four points to calculate a distorted version of image two and moves it to match the points of image one.
 
-\lstinputlisting[caption=Matlab Code, label=lst:panoramastitching]{./Bildg_Messtechnik_Lab/PanoramaStitching/main.m}
+\lstinputlisting[float,caption=Matlab Code, label=lst:panoramastitching]{./Bildg_Messtechnik_Lab/PanoramaStitching/main.m}
 
 There are several options to choose the points within the target.
 Some ideas and its results are discussed in the following sections.

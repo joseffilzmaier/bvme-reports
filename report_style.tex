@@ -21,6 +21,12 @@
 %%% packages
 %%%
 
+
+\usepackage[a4paper]{geometry}
+\geometry{tmargin=1in,bmargin=1.25in,lmargin=2.5cm,rmargin=2cm}
+
+\usepackage{microtype}
+
 %%%
 %%% encoding and language set
 %%%
@@ -53,6 +59,8 @@
 
 %%% amsmath, amssymb, amstext: support for mathematics
 %\usepackage{amsmath,amssymb,amstext}
+
+\usepackage{bm}
 
 %%% psfrag: replace PostScript fonts
 \usepackage{psfrag}
@@ -130,11 +138,13 @@
 \fi
 
 
+\usepackage[noabbrev]{cleveref}
+
 %%% sets the PDF-Information options
 %%% (see fields in Acrobat Reader: ``File -> Document properties -> Summary'')
 %%% Note: this method is better than as options of the hyperref-package (options are expanded correctly)
 \hypersetup{
-  pdftitle={Image Based Measurement Laboratory 1}, %%
+  pdftitle={Image Based Measurement Laboratory}, %%
   pdfauthor={Filzmaier Josef, Michael Sieberer}, %%
   pdfsubject={Image Stitching, Auto-Focus, Sensor Dynamics, Perspective invariants}, %%
   pdfcreator={Accomplished with LaTeX2e and pdfLaTeX with hyperref-package.}, %% 
@@ -177,9 +187,6 @@
  
 %\titlehead{} %% special heading for the titlepage
 
-%%% title
-\title{Lab1 - Uncalibrated Sensors}
-
 %%% author(s)
 \author{Filzmaier Josef (1030462) \and
 Michael Sieberer (1531366)}
@@ -196,16 +203,16 @@ Michael Sieberer (1531366)}
 
 %%% uncomment following lines, if you want to:
 %%% reuse the maketitle-entries for hyperref-setup
-%\newcommand\org@maketitle{}
-%\let\org@maketitle\maketitle
-%\def\maketitle{%
-%  \hypersetup{
-%    pdftitle={\@title},
-%    pdfauthor={\@author}
-%    pdfsubject={\@subject}
-%  }%
-%  \org@maketitle
-%}
+%%\newcommand\org@maketitle{}
+%%\let\org@maketitle\maketitle
+%%\def\maketitle{%
+%%  \hypersetup{
+%%    pdftitle={\@title},
+%%    pdfauthor={\@author}
+%%    pdfsubject={\@subject}
+%%  }%
+%%  \org@maketitle
+%%}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
