@@ -1,0 +1,146 @@
+\documentclass[
+a4paper,     %% defines the paper size: a4paper (default), a5paper, letterpaper, ...
+% landscape,   %% sets the orientation to landscape
+% twoside,     %% changes to a two-page-layout (alternatively: oneside)
+% twocolumn,   %% changes to a two-column-layout
+% headsepline, %% add a horizontal line below the column title
+% footsepline, %% add a horizontal line above the page footer
+% titlepage,   %% only the titlepage (using titlepage-environment) appears on the first page (alternatively: notitlepage)
+% parskip,     %% insert an empty line between two paragraphs (alternatively: halfparskip, ...)
+% leqno,       %% equation numbers left (instead of right)
+% fleqn,       %% equation left-justified (instead of centered)
+% tablecaptionabove, %% captions of tables are above the tables (alternatively: tablecaptionbelow)
+% draft,       %% produce only a draft version (mark lines that need manual edition and don't show graphics)
+% 10pt         %% set default font size to 10 point
+% 11pt         %% set default font size to 11 point
+11pt         %% set default font size to 12 point
+]{scrartcl}  %% article, see KOMA documentation (scrguide.dvi)
+
+
+\input{tikz_zoombox}
+\input{../report_style}
+
+
+%%% title
+\title{Lab2 - Color}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%
+%%% begin document
+%%%
+
+\begin{document}
+
+% \pagenumbering{roman} %% small roman page numbers
+
+%%% include the title
+% \thispagestyle{empty}  %% no header/footer (only) on this page
+ \maketitle
+
+%%% start a new page and display the table of contents
+ \tableofcontents
+ \newpage
+
+\section{Image Acquisition}
+
+\subsection{Problem statement}
+
+Using a color camera perform the following tasks:
+
+\begin{itemize}
+ \item Acquire a set of images.
+ \item Extract the raw image of the camera.
+ \item Implement a MATLAB function which transforms the $N \times M \times 1$ raw image of the sensor into a $N \times M \times 3$ RGB image using a bilinear interpolation.
+ \item Convert your images and discuss your results.
+\end{itemize}
+
+\subsection{Solution}
+The camera is used to acquire a color image of an object with defined red, green and blue colors. The raw sensor input is then saved as image for further processing. The acquired picture of red, blue and green lego bricks is shown in \cref{fig:imgAcq_Raw}. 
+
+%%\begin{figure}[ht!]
+%% \centering
+%% \includegraphics[width=.6\linewidth]{./Bildg_Messtechnik_Lab/ColorImageAcquisition/pictures/bayer1.png}
+%% \caption{Raw Image from camera, showing Bayer pattern}
+%% \label{fig:imgAcq_Raw}
+%%\end{figure}
+
+\begin{figure}[ht]\centering
+\begin{tikzpicture}[zoomboxarray,
+    zoomboxarray columns=1,
+    zoomboxarray rows=1,
+    connect zoomboxes,
+    zoombox paths/.append style={ultra thick, red}]
+    \node [image node] { \includegraphics[width=0.45\textwidth]{./Bildg_Messtechnik_Lab/ColorImageAcquisition/pictures/bayer1.png} };
+    \zoombox[magnification=10]{0.36,0.38}
+\end{tikzpicture}
+\caption{Raw image from camera, showing Bayer pattern.\\ The Lego bricks are red, blue and green respectively}\label{fig:imgAcq_Raw}
+\end{figure}
+
+This image is fed into the MATLAB script shown in \cref{lst:imgAcq_Raw1}. The user is prompted to select image regions representing red, green and blue areas respectively. The best-fitting cells in an $8 \times 8$ pixels grid are then displayed.
+
+\begin{lstlisting}[float,floatplacement=h!,label=lst:imgAcq_Raw1, caption=Matlab script to show bayer pattern of acquired image]
+raw = imread('pictures/bayer1.png');
+
+[h, w] = size(raw);
+
+%select 3 points with given color
+figure;
+[c, r, ~] = impixel(raw); close;
+
+c = round(c/8) * 8 +1; %choose nearest cell in 8x8 grid
+r = round(r/8) * 8 +1; %choose nearest cell in 8x8 grid
+
+im_red   = raw(r(1)-4:r(1)+3, c(1)-4:c(1)+3);
+im_green = raw(r(2)-4:r(2)+3, c(2)-4:c(2)+3);
+im_blue  = raw(r(3)-4:r(3)+3, c(3)-4:c(3)+3);
+
+figure; %display red, green and blue cells
+subplot(2,2,1);
+imshow(im_red);
+title('Red');
+
+subplot(2,2,2);
+imshow(im_green);
+title('Green');
+
+subplot(2,2,3);
+imshow(im_blue);
+title('Blue');
+\end{lstlisting}
+
+The result, shown in \cref{fig:imgAcq_BayerRGB}, indicates a $4 \times 4$ bayer pattern with filters for red on the top-left pixel, green on both top-right and bottom-left pixels and blue on the bottom-right pixel.
+
+\begin{figure}[ht!]
+ \centering
+ \includegraphics[trim=60px 40px 60px 0, clip, width=.6\textwidth]{./Bildg_Messtechnik_Lab/ColorImageAcquisition/html/main_01.png}
+ \caption{Extracted bayer patterns from raw image}
+ \label{fig:imgAcq_BayerRGB}
+\end{figure}
+
+\clearpage
+Using this information, it is possible to write code to convert the raw image to a full rgb picture. A very simple implementation is shown in \cref{lst:imgAcq_Raw2}. Using this script on the initial image results in the image shown in \cref{fig:imgAcq_Interp}.
+
+
+\begin{lstlisting}[label=lst:imgAcq_Raw2, caption=Matlab script to convert raw pictures to RGB]
+img2 = zeros(h,w,3);
+
+x = 1:w;
+y = 1:h;
+rawD = double(raw);
+img2(:,:,1) = interp2(1:2:w,1:2:h,rawD(1:2:end,1:2:end), x', y);
+img2(:,:,2) = interp2(1:2:w,1:2:h,rawD(1:2:end,2:2:end) + pat_green(2:2:end,1:2:end), x', y);
+img2(:,:,3) = interp2(1:2:w,1:2:h,rawD(2:2:end,2:2:end), x', y);
+
+figure;
+imshow(uint8(img2));
+\end{lstlisting}
+
+\begin{figure}[t]
+ \centering
+ \includegraphics[width=.6\textwidth]{./Bildg_Messtechnik_Lab/ColorImageAcquisition/html/main_02.png}
+ \caption{Interpolated RGB image from raw image in \cref{fig:imgAcq_Raw}}  \label{fig:imgAcq_Interp}
+\end{figure}
+
+\end{document}
+
