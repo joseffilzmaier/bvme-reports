@@ -1,0 +1,1 @@
+install anaconda and opencv

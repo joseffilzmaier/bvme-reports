@@ -20,6 +20,8 @@ a4paper,     %% defines the paper size: a4paper (default), a5paper, letterpaper,
 \input{tikz_zoombox}
 \input{../report_style}
 
+\usepackage{placeins}
+
 
 %%% title
 \title{Lab2 - Color}
@@ -141,6 +143,334 @@ imshow(uint8(img2));
  \includegraphics[width=.6\textwidth]{./Bildg_Messtechnik_Lab/ColorImageAcquisition/html/main_02.png}
  \caption{Interpolated RGB image from raw image in \cref{fig:imgAcq_Raw}}  \label{fig:imgAcq_Interp}
 \end{figure}
+
+\subsection{Discussion}
+
+\clearpage
+\section{Color Spaces} \label{sec:colSpa}
+
+\subsection{Problem statement}
+
+Using a color camera perform the following tasks:
+
+\begin{itemize}
+ \item Capture color images of a scene comprising different colored objects under changing illumination conditions $(N \geq 3)$
+ \item Tansform the obtained images into the following color spaces:
+ \begin{itemize}
+  \item RGB 
+  \item HSV
+  \item Lab 
+  \item XYZ
+ \end{itemize}
+ \item Discuss how the changing illumination effects the channels of the particular color spaces. What are the possible applications of the individual color spaces?
+\end{itemize}
+
+\subsection{Solution}
+
+A nicely colored scene was created and images under different illumination conditions were taken. These images are shown in \cref{fig:colSpa1}.
+
+\begin{figure}[ht!]
+\centering
+\begin{subfigure}{.3\textwidth}
+  \centering
+  \includegraphics[width=.8\linewidth]{./Bildg_Messtechnik_Lab/ColorSpaces/pictures/bild_ohne.png}
+  \caption{room lights}
+\end{subfigure}
+\begin{subfigure}{.3\textwidth}
+  \centering
+  \includegraphics[width=.8\linewidth]{./Bildg_Messtechnik_Lab/ColorSpaces/pictures/bild_led.png}
+  \caption{led lamp}
+\end{subfigure}
+\begin{subfigure}{.3\textwidth}
+  \centering
+  \includegraphics[width=.8\linewidth]{./Bildg_Messtechnik_Lab/ColorSpaces/pictures/bild_strahler.png}
+  \caption{halogen lamp}
+\end{subfigure}
+\caption{Same scene under different illumination conditions}
+\label{fig:colSpa1}
+\end{figure}
+
+These images were then transformed into HSV, Lab and XYZ color spaces using a MATLAB script. \lstinline{rgb2hsv(..)} is implemented by MATLAB, transformation into the other color spaces was implemented like in \cref{lst:colSpa_Help}.
+
+\begin{lstlisting}[label=lst:colSpa_Help, caption=Helper functions to convert from RGB to Lab and XYZ]
+function imgLab = rgb2lab(img)
+    C = makecform('srgb2lab');
+    imgLab = applycform(img, C);
+end
+
+function imgXyz = rgb2xyz(img)
+    C = makecform('srgb2xyz');
+    imgXyz = applycform(img, C);
+end
+\end{lstlisting}
+
+\newpage
+\begin{figure}[ht!]
+\centering
+\begin{subfigure}{\textwidth}
+  \centering
+  \includegraphics[trim=60px 40px 60px 0, clip, height=7.3cm]{./Bildg_Messtechnik_Lab/ColorSpaces/html/main_01.png}
+  \caption{room lights}
+\end{subfigure}
+\begin{subfigure}{\textwidth}
+  \centering
+  \includegraphics[trim=60px 40px 60px 0, clip, height=7.3cm]{./Bildg_Messtechnik_Lab/ColorSpaces/html/main_05.png}
+  \caption{led lamp}
+\end{subfigure}
+\begin{subfigure}{\textwidth}
+  \centering
+  \includegraphics[trim=60px 40px 60px 0, clip, height=7.3cm]{./Bildg_Messtechnik_Lab/ColorSpaces/html/main_09.png}
+  \caption{halogen lamp}
+\end{subfigure}
+\caption{RGB channels of the same scene under different illumination conditions}
+\label{fig:colSpa_RGB}
+\end{figure}
+
+\newpage
+\begin{figure}[ht!]
+\centering
+\begin{subfigure}{\textwidth}
+  \centering
+  \includegraphics[trim=60px 40px 60px 0, clip, height=7.3cm]{./Bildg_Messtechnik_Lab/ColorSpaces/html/main_02.png}
+  \caption{room lights}
+\end{subfigure}
+\begin{subfigure}{\textwidth}
+  \centering
+  \includegraphics[trim=60px 40px 60px 0, clip, height=7.3cm]{./Bildg_Messtechnik_Lab/ColorSpaces/html/main_06.png}
+  \caption{led lamp} \label{fig:colSpa_HSVb}
+\end{subfigure}
+\begin{subfigure}{\textwidth}
+  \centering
+  \includegraphics[trim=60px 40px 60px 0, clip, height=7.3cm]{./Bildg_Messtechnik_Lab/ColorSpaces/html/main_10.png}
+  \caption{halogen lamp}
+\end{subfigure}
+\caption{HSV channels of the same scene under different illumination conditions}
+\label{fig:colSpa_HSV}
+\end{figure}
+
+\newpage
+\begin{figure}[ht!]
+\centering
+\begin{subfigure}{\textwidth}
+  \centering
+  \includegraphics[trim=60px 40px 60px 0, clip, height=7.3cm]{./Bildg_Messtechnik_Lab/ColorSpaces/html/main_03.png}
+  \caption{room lights}
+\end{subfigure}
+\begin{subfigure}{\textwidth}
+  \centering
+  \includegraphics[trim=60px 40px 60px 0, clip, height=7.3cm]{./Bildg_Messtechnik_Lab/ColorSpaces/html/main_07.png}
+  \caption{led lamp}
+\end{subfigure}
+\begin{subfigure}{\textwidth}
+  \centering
+  \includegraphics[trim=60px 40px 60px 0, clip, height=7.3cm]{./Bildg_Messtechnik_Lab/ColorSpaces/html/main_11.png}
+  \caption{halogen lamp}
+\end{subfigure}
+\caption{Lab channels of the same scene under different illumination conditions}
+\label{fig:colSpa_Lab}
+\end{figure}
+
+\newpage
+\begin{figure}[ht!]
+\centering
+\begin{subfigure}{\textwidth}
+  \centering
+  \includegraphics[trim=60px 40px 60px 0, clip, height=7.3cm]{./Bildg_Messtechnik_Lab/ColorSpaces/html/main_04.png}
+  \caption{room lights}
+\end{subfigure}
+\begin{subfigure}{\textwidth}
+  \centering
+  \includegraphics[trim=60px 40px 60px 0, clip, height=7.3cm]{./Bildg_Messtechnik_Lab/ColorSpaces/html/main_08.png}
+  \caption{led lamp}
+\end{subfigure}
+\begin{subfigure}{\textwidth}
+  \centering
+  \includegraphics[trim=60px 40px 60px 0, clip, height=7.3cm]{./Bildg_Messtechnik_Lab/ColorSpaces/html/main_12.png}
+  \caption{halogen lamp}
+\end{subfigure}
+\caption{XYZ channels of the same scene under different illumination conditions}
+\label{fig:colSpa_XYZ}
+\end{figure}
+
+\clearpage
+\subsection{Discussion}
+Comparing the three images in different color spaces shows some interesting features:
+\begin{itemize}
+ \item \textbf{RGB}: All channels vary much with different illumination conditions, consequently this color space is not very practical for filtering out color information. It is, however, the usual internal representation of digital images.
+ \item \textbf{HSV}: Separating \textbf Hue, \textbf Saturation and \textbf Value is useful for several tasks in image processing. In this case H and S channels are relatively independent from illumination strength.\\
+ The Hue-Channel-Image for \cref{fig:colSpa_HSVb} looks quite different. However, since Hue is periodic, dark ($0.0$) and bright ($1.0$) represent the same color (red).
+ \item \textbf{Lab}: The Lab color space splits representation in \textbf Lightness and \textbf{a},\textbf{b} for color opponent dimensions. It is designed to mimic human color perception and therefore yields a,b-channel values that are relatively independent of illumination. Just like human vision can identify colors under almost any illumination condition.
+ \item \textbf{XYZ}: The XYZ color space uses a similar idea as the Lab color space. The X,Y and Z-channels directly represent the light intensities in the human perception spectrum where X is red, Y is green, and Z is blue.
+\end{itemize}
+
+\newpage
+\FloatBarrier
+\section{Color Constancy}
+
+\subsection{Problem statement}
+
+Using a color camera perform the following tasts:
+\begin{itemize}
+ \item Capture color images of a scene under different illumination conditions.
+ \item Implement different algorithms to perform a white balance on your images:
+ \begin{itemize}
+  \item White patch retinex algorithm.
+  \item White patch retinex algorithm using histogram information
+  \item Gray world assumption
+ \end{itemize}
+ \item Discuss your results.
+\end{itemize}
+
+\subsection{Solution}
+The images from \cref{sec:colSpa} were used for this exercise. The three different algorithms from appendix A in the laboratory handout\cite{HO} were implemented in MATLAB. The implementation is shown in \cref{lst:colConst_WPR,lst:colConst_WPRH,lst:colConst_GW}.
+
+
+\subsection{Discussion}
+The results shown in \cref{fig:colConst} show the poor performance of any of the white balance algorithms. \textit{whitePatchRetinex} always maxes each color out, so it doesn't change anything in the image.
+\textit{whitePatchRetinexHist} performs significantly better in terms of brightness compensation, however color remains unchanged. \textit{grayWorld} performs exactly like \textit{whitePatchRetinexHist}.\\[2em]
+
+\begin{lstlisting}[label=lst:colConst_WPR, caption=MATLAB implementation of whitePatchRetinex]
+function [ img_out ] = whitePatchRetinex( img_in )
+
+img_out = double(img_in);
+
+L_i_max(1) = max(max(img_in(:,:,1)));
+L_i_max(2) = max(max(img_in(:,:,2)));
+L_i_max(3) = max(max(img_in(:,:,3)));
+
+L_i_max %well... this is more often than not [255 255 255]
+
+for i=1:3
+    img_out(:,:,i) = img_out(:,:,i) ./ double(L_i_max(i)) .* 255;
+end
+
+img_out = uint8(img_out);
+end
+\end{lstlisting}
+\newpage
+
+
+\begin{lstlisting}[label=lst:colConst_WPRH, caption=MATLAB implementation of whitePatchRetinexHist]
+function [ img_out ] = whitePatchRetinexHist( img_in )
+
+img_out = double(img_in);
+
+img_r = img_in(:,:,1);
+img_r = sort(img_r(:), 'descend');
+L_i_max(1) = img_r(floor(numel(img_r)*0.05));
+
+img_g = img_in(:,:,1);
+img_g = sort(img_g(:), 'descend');
+L_i_max(2) = img_g(floor(numel(img_g)*0.05));
+
+img_b = img_in(:,:,1);
+img_b = sort(img_b(:), 'descend');
+L_i_max(3) = img_b(floor(numel(img_b)*0.05));
+
+for i=1:3
+    img_out(:,:,i) = img_out(:,:,i) ./ double(L_i_max(i)) .* 255;
+end
+
+img_out = uint8(img_out);
+end
+\end{lstlisting}
+
+
+
+\begin{lstlisting}[label=lst:colConst_GW, caption=MATLAB implementation of grayWorld]
+function [ img_out ] = grayWorld( img_in )
+
+img_out = double(img_in);
+
+img_r = img_in(:,:,1);
+L_i_mean(1) = mean(img_r(:));
+
+img_g = img_in(:,:,1);
+L_i_mean(2) = mean(img_g(:));
+
+img_b = img_in(:,:,1);
+L_i_mean(3) = mean(img_b(:));
+
+for i=1:3
+    img_out(:,:,i) = img_out(:,:,i) ./ double(L_i_mean(i));
+end
+
+img_out_v = sort(img_out(:),'descend');
+max_out = img_out_v(floor(numel(img_out)*0.10));
+
+img_out = img_out / max_out * 255;
+img_out = min(img_out, 255); %clip values over 255
+
+img_out = uint8(img_out);
+end
+\end{lstlisting}
+
+
+
+\newpage
+\begin{figure}[ht!]
+\centering
+\begin{subfigure}{\textwidth}
+  \centering
+  \includegraphics[trim=40px 40px 40px 0, clip, height=7.3cm]{./Bildg_Messtechnik_Lab/ColorConstancy/html/main_01.png}
+  \caption{room lights}
+\end{subfigure}
+\begin{subfigure}{\textwidth}
+  \centering
+  \includegraphics[trim=40px 40px 40px 0, clip, height=7.3cm]{./Bildg_Messtechnik_Lab/ColorConstancy/html/main_03.png}
+  \caption{led lamp}
+\end{subfigure}
+\begin{subfigure}{\textwidth}
+  \centering
+  \includegraphics[trim=40px 40px 40px 0, clip, height=7.3cm]{./Bildg_Messtechnik_Lab/ColorConstancy/html/main_02.png}
+  \caption{halogen lamp}
+\end{subfigure}
+\caption{Comparison of different white balance algorithms}
+\label{fig:colConst}
+\end{figure}
+\FloatBarrier
+
+
+\section{Color Calibration}
+
+\subsection{Problem statement}
+
+Using a color camera perform the following tasts:
+
+\begin{itemize}
+ \item Capture a color image of a color reference target under uniform illumination conditions.
+ \item Perform a radiometric calibration of your camera. To do so find a mapping $\bm{M} \in R^{3 \times 3}$ that transforms the image pixel color value $\bm{c}(x,y) = (c_r(x,y), c_g(x,y), c_b(x,y))^T$ of a color target patch into the known reference value $\bm{r}(x,y) = (r_r(x,y), r_g(x,y), r_b(x,y))^T$.
+ \item Compare the color differences to the ground truth values before and after the calibration of the camera.
+ \item Discuss your results.
+\end{itemize}
+
+\subsection{Solution}
+
+
+%%%
+%%% end main document
+%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \appendix  %% include it, if something (bibliography, index, ...) follows below
+
+\begin{thebibliography}{XX}
+  \bibitem{HO}Laboratory Handout: \textit{Lab2--Color}. \\
+    Christoph Feichtenhofer and Thomas Höll, Winter--Term 2016/2017
+\end{thebibliography}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%
+%%% bibliography
+%%%
+%%% available styles: abbrv, acm, alpha, apalike, ieeetr, plain, siam, unsrt
+%%%
+% \bibliographystyle{plain}
+
+%%% name of the bibliography file without .bib
+%%% e.g.: literatur.bib -> \bibliography{literatur}
+% \bibliography{FIXXME}
 
 \end{document}
 
