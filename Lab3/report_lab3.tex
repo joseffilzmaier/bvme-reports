@@ -1,0 +1,248 @@
+\documentclass[
+a4paper,     %% defines the paper size: a4paper (default), a5paper, letterpaper, ...
+% landscape,   %% sets the orientation to landscape
+% twoside,     %% changes to a two-page-layout (alternatively: oneside)
+% twocolumn,   %% changes to a two-column-layout
+% headsepline, %% add a horizontal line below the column title
+% footsepline, %% add a horizontal line above the page footer
+% titlepage,   %% only the titlepage (using titlepage-environment) appears on the first page (alternatively: notitlepage)
+% parskip,     %% insert an empty line between two paragraphs (alternatively: halfparskip, ...)
+% leqno,       %% equation numbers left (instead of right)
+% fleqn,       %% equation left-justified (instead of centered)
+% tablecaptionabove, %% captions of tables are above the tables (alternatively: tablecaptionbelow)
+% draft,       %% produce only a draft version (mark lines that need manual edition and don't show graphics)
+% 10pt         %% set default font size to 10 point
+% 11pt         %% set default font size to 11 point
+11pt         %% set default font size to 12 point
+]{scrartcl}  %% article, see KOMA documentation (scrguide.dvi)
+
+
+\input{../report_style}
+
+\usepackage{placeins}
+
+
+%%% title
+\title{Lab3 - Geometry}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%
+%%% begin document
+%%%
+
+\begin{document}
+
+% \pagenumbering{roman} %% small roman page numbers
+
+%%% include the title
+% \thispagestyle{empty}  %% no header/footer (only) on this page
+ \maketitle
+
+%%% start a new page and display the table of contents
+ \tableofcontents
+ \newpage
+
+\section{Monocular Calibration}
+
+\subsection{Problem statement}
+
+An important prerequisite to the use of cameras in vision-based metrology is the metric calibration of the sensor.
+Calibration refers to the estimation of the model parameters based on one or more acquisitions of a calibration
+target. We use a pin-hole model which is comprised of the following parameters:
+
+\begin{itemize}
+ \item Radial and tangential distortion.
+ \item Horizontal and vertical focal lengths.
+ \item Skew angle.
+ \item Principle point.
+\end{itemize}
+
+Using a planar calibration target, perform the following points:
+
+\begin{itemize}
+ \item Acquire $N = 10...15$ images of the calibration target.
+ \item Calibrate the camera intrinsics using the Caltech toolbox.
+ \item Visualise the different geometric constellations.
+ \item Discuss your results.
+ \item Visualise the lens distortion by means of a vector field.
+ \item Undistort one of the calibration images and discuss the results.
+\end{itemize}
+
+Perform again the image stitching task of Lab1 and compare your results.
+
+\subsection{Solution}
+
+We used the matlab toolbox called Camera calibrator.
+It automatically detects the calibration target and calculates the mean pixel offset error of all $15$ taken images and visualizes them in a histogram.
+Also switching between undistorted and distorted images can done by pressing a button.
+The tool calculated the following camera calilbration matrix:
+
+
+\section{Stereo Calibration}
+
+\subsection{Problem statement}
+
+Using the stereo-rig perform the following tasks:
+
+\begin{itemize}
+ \item Calibrate the stereo rig. The intrinsic camera parameters will be provided.
+ \item Search for corresponding points with the help of the epipolar lines.
+ \item Estimate the area of the tracking target.
+\end{itemize}
+
+
+
+
+
+
+\section{Fundamental matrix estimation}
+
+\subsection{Problem statement}
+
+The fundamental matrix \textbf{F} describes the relationship between two views of the same scene. It is a 3 x 3 rank
+2 matrix and can be estimated using a minimum number of 7 point correspondence. In this exercise you will
+implement the well-known normalized 8 point algorithm ([2], [3]) to estimate the fundamental matrix.
+
+Your tasks for the exercise are:
+\begin{itemize}
+    \item Acquire a stereo image pair of a scene.
+    \item Use 8 corresponding points to estimate F.
+    \item Draw epipolar lines to verify the correctness of your estimation.
+\end{itemize}
+
+\subsection{Solution}
+
+At first two images of the same scene have been acquired. (See Figure \ref{fig:acquired_images})
+Then $8$ points are being selected on the left image $\mathbf{x_j}$ as well as on the right image $\mathbf{x_j'}$ and transformed into homogenous coordinates.
+
+\begin{figure}[ht!]
+\centering
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[scale=0.15]{Bildg_Messtechnik_Lab/FundamentalMatrix/img_left.jpg}
+  \caption{Scene shot taken from left angle}
+  \label{fig:sub1}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[scale=0.15]{Bildg_Messtechnik_Lab/FundamentalMatrix/img_right.jpg}
+  \caption{Scene shot taken from right angle}
+  \label{fig:sub2}
+\end{subfigure}
+\caption{A figure with two subfigures}
+\label{fig:acquired_images}
+\end{figure}
+
+
+\subsubsection{Setup linear equation system}
+
+The matrix $\mathbf{A^T}$ is calculated by multiplying all selected points in the following manner:
+$$
+\mathbf{A^T}_{i,j} = \left(\begin{array}{lll}
+x_j' \cdot x_j \\ x_j' \cdot y_j \\ x_j' \cdot z_j\\
+y_j' \cdot x_j \\ y_j' \cdot y_j \\ y_j' \cdot z_j\\
+z_j' \cdot x_j \\ z_j' \cdot y_j \\ z_j' \cdot z_j\\
+\end{array}\right)
+$$
+
+for $j \in [1,8]$. Then we calculate the eigenvector using the matlab function \lstinline{svd()}.
+Then we only need to reshape the vector $\mathbf{f}$ to the $3$ by $3$ Fundamental matrix $\mathbf{F}$.
+
+\begin{lstlisting}[label=lst:setup, caption=Matlab script setting up linear equation system]
+A = [pts2_hom(1,:) .* pts1_hom(1,:); pts2_hom(1,:) .* pts1_hom(2,:); pts2_hom(1,:) .* pts1_hom
+pts2_hom(2,:) .* pts1_hom(1,:); pts2_hom(2,:) .* pts1_hom(2,:); pts2_hom(2,:) .* pts1_hom
+pts2_hom(3,:) .* pts1_hom(1,:); pts2_hom(3,:) .* pts1_hom(2,:); pts2_hom(3,:) .* pts1_hom
+A = A';
+[~,~,V] = svd(A);
+F = reshape(V(:,end),3,3)';
+\end{lstlisting}
+
+\subsubsection{Impose rank 2 constraint}
+
+The rank 2 constraint ($\textmd{det} \mathbf{F} = 0$) is calculated by first computing the \lstinline{svd()} of the estimated fundamental matrix $\mathbf{F}$.
+This results in $\mathbf{USV^T}$. Assuming $\mathbf{S} = diag(\sigma_1, \sigma_2, \sigma_3)$ is a diagonal matrix with the singular values of $\mathbf{F}$ a new matrix
+$\mathbf{\hat{F}}$ is introduced which is calculated as $Fs$ within Listing \ref{lst:constraint}.
+$\mathbf{\hat{S}}$ is calculated as $diag(\sigma_1, \sigma_2, 0)$. $\mathbf{\hat{F}} = \mathbf{U\hat{S}V}$.
+
+\begin{lstlisting}[label=lst:constraint, caption=Matlab script for imposing rank 2 constraint]
+[U,S,V] = svd(F);
+sig = sort(S(:),'descend');
+Ss = diag([sig(1:2)' 0]);
+Fs = U*Ss*V';
+if USE_NORMALIZED_ALGO
+Fs = T2'*Fs*T1;
+end
+\end{lstlisting}
+
+\subsubsection{Show stereo pair and plot the epipolar lines}
+
+The lines for each corresponding point are then calculated using the following equations:
+
+$$ l' = F x $$
+$$ l^T x = 0 \leftarrow y = \frac{-l_3 - l_1 \cdot x}{l_2} $$
+
+And plotted using the \lstinline{drawEpipolarLine()} function.
+
+\begin{figure}
+ \centering
+ \includegraphics[scale=0.4]{left_lines.jpg}
+ \caption{Epipolar lines for left Picture}
+ \label{fig:left_lines}
+\end{figure}
+
+
+\begin{figure}
+ \centering
+ \includegraphics[scale=0.4]{right_lines.jpg}
+ \caption{Epipolar lines for right Picture}
+ \label{fig:right_lines}
+\end{figure}
+
+
+\section{Camera Projection Matrix}
+
+\subsection{Problem statement}
+
+Using RQ-decomposition we can decompose M = KR into K and R.
+For this exercise perform the following tasks:
+
+\begin{enumerate}
+ \item Using the 3d target, acquire n = 6 images.
+ \item Compute the projection matrix P using the given Matlab framework.
+ \item Decompose the projection matrix P to get:
+ \begin{itemize}
+  \item The camera center C in the world coordinate frame.
+  \item The camera calibration matrix K.
+  \item The rotation matrix R that represents the orientation of the camera coordinate frame.
+ \end{itemize}
+
+\end{enumerate}
+
+%%%
+%%% end main document
+%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \appendix  %% include it, if something (bibliography, index, ...) follows below
+
+\begin{thebibliography}{XX}
+  \bibitem{HO}Laboratory Handout: \textit{Lab2--Color}. \\
+    Christoph Feichtenhofer and Thomas Höll, Winter--Term 2016/2017
+\end{thebibliography}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%
+%%% bibliography
+%%%
+%%% available styles: abbrv, acm, alpha, apalike, ieeetr, plain, siam, unsrt
+%%%
+% \bibliographystyle{plain}
+
+%%% name of the bibliography file without .bib
+%%% e.g.: literatur.bib -> \bibliography{literatur}
+% \bibliography{FIXXME}
+
+\end{document}
+
