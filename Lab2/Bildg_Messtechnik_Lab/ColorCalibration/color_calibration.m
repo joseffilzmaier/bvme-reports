@@ -29,13 +29,16 @@ title('Calibrated image II');
 %% compare the calibrated image with the ground truth data
 
 [c_comp, r_comp, n_img_val] = getSquareColors(n_img, 6);
+[o_img_val] = getImColors(img, c_comp, r_comp);
 [a_img_val] = getImColors(a_rgb, c_comp, r_comp);
 [~, ~, c_img_val] = getSquareColors( color_checker, 6);
 
 n_diff = zeros(1,6);
 a_diff = n_diff;
+o_diff = n_diff;
 
 for i=1:6
+    o_diff(i) = norm(o_img_val(i,:)-c_img_val(i,:));
     n_diff(i) = norm(n_img_val(i,:)-c_img_val(i,:));
     a_diff(i) = norm(a_img_val(i,:)-c_img_val(i,:));
 end

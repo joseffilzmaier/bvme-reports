@@ -21,6 +21,10 @@ a4paper,     %% defines the paper size: a4paper (default), a5paper, letterpaper,
 \input{../report_style}
 
 \usepackage{placeins}
+\usepackage{tabu}
+\usepackage{siunitx}
+\usepackage{booktabs}
+\usepackage{amsmath,amssymb}
 
 
 %%% title
@@ -67,7 +71,8 @@ The camera is used to acquire a color image of an object with defined red, green
 %% \label{fig:imgAcq_Raw}
 %%\end{figure}
 
-\begin{figure}[ht]\centering
+\begin{figure}[ht]
+\centering
 \begin{tikzpicture}[zoomboxarray,
     zoomboxarray columns=1,
     zoomboxarray rows=1,
@@ -76,7 +81,7 @@ The camera is used to acquire a color image of an object with defined red, green
     \node [image node] { \includegraphics[width=0.45\textwidth]{./Bildg_Messtechnik_Lab/ColorImageAcquisition/pictures/bayer1.png} };
     \zoombox[magnification=10]{0.36,0.38}
 \end{tikzpicture}
-\caption{Raw image from camera, showing Bayer pattern.\\ The Lego bricks are red, blue and green respectively}\label{fig:imgAcq_Raw}
+\caption{Raw image from camera, showing Bayer pattern. The Lego bricks are red, blue and green respectively}\label{fig:imgAcq_Raw}
 \end{figure}
 
 This image is fed into the MATLAB script shown in \cref{lst:imgAcq_Raw1}. The user is prompted to select image regions representing red, green and blue areas respectively. The best-fitting cells in an $8 \times 8$ pixels grid are then displayed.
@@ -145,6 +150,10 @@ imshow(uint8(img2));
 \end{figure}
 
 \subsection{Discussion}
+Looking at line 7 of \cref{lst:imgAcq_Raw2} and \cref{fig:imgAcq_BayerRGB} shows that the green pixels are only half as bright as the red and blue pixels, but there are twice as many on the whole sensor.
+
+This is the so-called ``bayer pattern''. Green pixels dominate, because green is the dominant color for brightness (and therefore contrast) in the human vision spectrum.
+
 
 \clearpage
 \section{Color Spaces} \label{sec:colSpa}
@@ -300,7 +309,7 @@ Comparing the three images in different color spaces shows some interesting feat
  \item \textbf{HSV}: Separating \textbf Hue, \textbf Saturation and \textbf Value is useful for several tasks in image processing. In this case H and S channels are relatively independent from illumination strength.\\
  The Hue-Channel-Image for \cref{fig:colSpa_HSVb} looks quite different. However, since Hue is periodic, dark ($0.0$) and bright ($1.0$) represent the same color (red).
  \item \textbf{Lab}: The Lab color space splits representation in \textbf Lightness and \textbf{a},\textbf{b} for color opponent dimensions. It is designed to mimic human color perception and therefore yields a,b-channel values that are relatively independent of illumination. Just like human vision can identify colors under almost any illumination condition.
- \item \textbf{XYZ}: The XYZ color space uses a similar idea as the Lab color space. The X,Y and Z-channels directly represent the light intensities in the human perception spectrum where X is red, Y is green, and Z is blue.
+ \item \textbf{XYZ}: The XYZ color space was also designed with human perception in mind. The X,Y and Z-channels directly represent the light intensities in the human perception spectrum where X is red, Y is green, and Z is blue.
 \end{itemize}
 
 \newpage
@@ -446,6 +455,121 @@ Using a color camera perform the following tasts:
 
 \subsection{Solution}
 
+\begin{figure}[ht!]
+\centering
+\begin{subfigure}{0.49\textwidth}
+  \centering
+  \includegraphics[height=5cm]{./Bildg_Messtechnik_Lab/ColorCalibration/color_checker.png}
+  \caption{reference target}
+\end{subfigure}%
+\begin{subfigure}{0.49\textwidth}
+  \centering
+  \includegraphics[clip, trim=0 4cm 0 4cm, width=\textwidth]{./Bildg_Messtechnik_Lab/ColorCalibration/pictures/pic_D50.png}
+  \caption{picture of target}
+\end{subfigure}
+\caption{Color reference target and picture}
+\label{fig:colCal_ref}
+\end{figure}
+
+\newcommand{\R}{\mathbb{R}}
+
+A picture of the printed reference target was taken and loaded in a Matlab-script. Based on the color information of this picture and the reference colors two strategies to color-calibrate the camera were implemented. \\
+
+First uses a corespondence-matrix $M \in \R ^{3\times 3}$, such that
+\begin{align*}  r = M c \text{,} \end{align*}
+where $c \in \R^3$ is the pixel color of the image and $r \in \R^3$ is the corrected color.
+
+For this, four color corespondences where manually chosen on the picture and $M$ fitted accordingly using the algorithm shown in \cref{lst:colCal_calibCam}. \Cref{fig:colCal_pict1} shows the adjusted picture.
+
+Since this calibration method only allows for linear adjustments, it fails miserably when trying to calibrate badly distorted colors (like the light blue square in the third row). \\
+
+The second approach fits the color channels over a few gray squares and thus allows non-linear corrections. This strategy was already implemented in \textit{grayValueCurveFitting} and only used by us. \Cref{fig:colCal_pict2,fig:colCal_pict3} shows the fitting functions and the resulting adjusted image.
+
+\begin{lstlisting}[label=lst:colCal_calibCam, caption=MATLAB implementation of calibCam]
+function [ n_img ] = calibCam( val_img, val_target, img )
+% Color camera calibration
+% Input:
+%   val_img ... rgb color values of the image (Nx3)
+%   val_target ... rgb color values of the calibration pattern (Nx3)
+%   img ... original image
+%
+% Return:
+%   n_img ... calibrated image
+N = size(val_img,1); % N = number of patches
+
+% mapping M
+M = val_img \ val_target;
+
+n_img = img;
+
+% split RGB-image to color channels
+imgR = img(:,:,1);
+imgG = img(:,:,2);
+imgB = img(:,:,3);
+img2 = [imgR(:), imgG(:), imgB(:)];
+
+% adjust colors
+img2 = M * double(img2)';
+img2 = img2';
+
+% reshape color channels back to RGB-image
+n_img(:,:,1) = reshape(img2(:,1), size(img,1), size(img,2));
+n_img(:,:,2) = reshape(img2(:,2), size(img,1), size(img,2));
+n_img(:,:,3) = reshape(img2(:,3), size(img,1), size(img,2));
+\end{lstlisting}
+
+\subsection{Discussion}
+The colors of the six squares in the third row were compared with the reference colors, the mean difference of each can be found in \cref{tab:colCal_err}. Obviously, while calibrating improves the color-correctness, a small error still remains.
+
+Comparing \cref{fig:colCal_pict1,fig:colCal_pict3} shows that the second, non-linear method, produces more natural images with better white-balance.
+
+\sisetup{table-format=2.1,table-auto-round}
+\begin{table}[ht!]
+  \centering
+  \caption{Mean color difference before and after calibration} \label{tab:colCal_err}
+  calculated using $D = \sqrt{\Delta r^2 + \Delta g^2 + \Delta b^2}$ \\
+  \begin{tabu}{cSSSSSS}
+    \toprule
+    Measurement & \multicolumn{6}{c}{Mean color difference on each square} \\
+                & {blue} & {green} & {red} & {yelow} & {pink} & {light blue} \\
+    \midrule
+    uncalibrated image & 69.0302 & 61.9566 & 62.2868 & 79.3880 & 90.9124 & 93.4355 \\
+    color calibration  & 13.3420 & 18.6737 & 18.6768 & 34.3115 & 22.4159 & 60.5989 \\
+    gray  calibration  & 6.7334 & 30.3153 & 21.1672 & 27.5649 & 18.4197 & 68.7355 \\
+    \bottomrule
+  \end{tabu} 
+\end{table}
+
+
+
+\begin{figure}[ht!]
+\centering
+\begin{subfigure}{0.49\textwidth}
+  \centering
+  \includegraphics[width=\textwidth]{./Bildg_Messtechnik_Lab/ColorCalibration/html/color_calibration_01.png}
+  \caption{uncalibrated image}
+\end{subfigure}%
+\begin{subfigure}{0.49\textwidth}
+  \centering
+  \includegraphics[width=\textwidth]{./Bildg_Messtechnik_Lab/ColorCalibration/html/color_calibration_02.png}
+  \caption{color calibration} \label{fig:colCal_pict1}
+\end{subfigure}\\
+\begin{subfigure}{0.49\textwidth}
+  \centering
+  \includegraphics[width=\textwidth]{./Bildg_Messtechnik_Lab/ColorCalibration/html/color_calibration_03.png}
+  \caption{color fit for gray calibration} \label{fig:colCal_pict2}
+\end{subfigure}%
+\begin{subfigure}{0.49\textwidth}
+  \centering
+  \includegraphics[width=\textwidth]{./Bildg_Messtechnik_Lab/ColorCalibration/html/color_calibration_04.png}
+  \caption{gray calibration} \label{fig:colCal_pict3}
+\end{subfigure}
+\caption{Color calibration results}
+\label{fig:colCal_pict}
+\end{figure}
+
+
+
 
 %%%
 %%% end main document
@@ -454,6 +578,7 @@ Using a color camera perform the following tasts:
 
 % \appendix  %% include it, if something (bibliography, index, ...) follows below
 
+\FloatBarrier
 \begin{thebibliography}{XX}
   \bibitem{HO}Laboratory Handout: \textit{Lab2--Color}. \\
     Christoph Feichtenhofer and Thomas Höll, Winter--Term 2016/2017
