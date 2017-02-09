@@ -20,6 +20,12 @@ a4paper,     %% defines the paper size: a4paper (default), a5paper, letterpaper,
 \input{../report_style}
 
 \usepackage{placeins}
+\usepackage{tabu}
+\usepackage{siunitx}
+\usepackage{booktabs}
+\usepackage{amsmath,amssymb}
+
+\usepackage{placeins}
 
 
 %%% title
@@ -73,12 +79,47 @@ Perform again the image stitching task of Lab1 and compare your results.
 
 \subsection{Solution}
 
-We used the matlab toolbox called Camera calibrator.
-It automatically detects the calibration target and calculates the mean pixel offset error of all $15$ taken images and visualizes them in a histogram.
-Also switching between undistorted and distorted images can done by pressing a button.
-The tool calculated the following camera calilbration matrix:
+For this task, the Camera Calibrator Matlab addon was used. The tool automatically detects the calibration target in sample images and calculates camera parameters from this images. \\
 
+In our case $15$ images of the same target in random positions were taken and fed to the Camera Calibrator. \Cref{fig:monCal_cal} shows the visual representation of the data presented by the tool.
 
+The data can be exported as \textit{cameraParameters}-object to be used by Matlab-functions like \nobreak\textit{undistortImage}. The camera intrinsics calculated by the tool are listed in \cref{tab:monCal_intrinics}.
+
+\sisetup{table-format=4.1,table-auto-round}
+\begin{table}[ht!]
+  \centering
+  \caption{Camera intrinsics calculated by the Camera Calibrator} \label{tab:monCal_intrinics}
+  \begin{tabu}{rSS}
+    \toprule
+    Focal Length     & 2360.2 & 2359.9 \\
+    Prinzipal Point  & 639.6271 & 513.3245 \\
+    Skew & \multicolumn{2}{c}{0.21} \\
+    \bottomrule
+  \end{tabu} 
+\end{table}
+
+\begin{figure}[ht!]
+\centering
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=0.95\textwidth]{calibrator1.png}
+  \caption{Image used to calibrate}
+  \label{fig:monCal_cal1}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=0.95\textwidth]{calibrator_ov.png}
+  \caption{Calculated positions of calibration targets}
+  \label{fig:monCal_cal2}
+\end{subfigure}
+\caption{Camera Calibrator toolbox}
+\label{fig:monCal_cal}
+\end{figure}
+
+\subsection{Discussion}
+{ \color{red} TODO }
+
+\FloatBarrier
 \section{Stereo Calibration}
 
 \subsection{Problem statement}
@@ -91,11 +132,7 @@ Using the stereo-rig perform the following tasks:
  \item Estimate the area of the tracking target.
 \end{itemize}
 
-
-
-
-
-
+\newpage
 \section{Fundamental matrix estimation}
 
 \subsection{Problem statement}
@@ -186,7 +223,7 @@ And plotted using the \lstinline{drawEpipolarLine()} function.
 
 \begin{figure}
  \centering
- \includegraphics[scale=0.4]{left_lines.jpg}
+ \includegraphics[width=0.82\textwidth]{left_lines.jpg}
  \caption{Epipolar lines for left Picture}
  \label{fig:left_lines}
 \end{figure}
@@ -194,12 +231,12 @@ And plotted using the \lstinline{drawEpipolarLine()} function.
 
 \begin{figure}
  \centering
- \includegraphics[scale=0.4]{right_lines.jpg}
+ \includegraphics[width=0.82\textwidth]{right_lines.jpg}
  \caption{Epipolar lines for right Picture}
  \label{fig:right_lines}
 \end{figure}
 
-
+\FloatBarrier
 \section{Camera Projection Matrix}
 
 \subsection{Problem statement}
@@ -216,8 +253,25 @@ For this exercise perform the following tasks:
   \item The camera calibration matrix K.
   \item The rotation matrix R that represents the orientation of the camera coordinate frame.
  \end{itemize}
-
 \end{enumerate}
+
+% K,R and C matrizes
+% >> K
+% K =
+%    1.0e+03 *
+%     4.2456   -0.0425    2.7451
+%          0   -4.2582    1.7604
+%          0         0    0.0010
+% >> R
+% R =
+%     0.0296    0.9995    0.0136
+%     0.0155   -0.0141    0.9998
+%    -0.9994    0.0294    0.0159
+% >> C
+% C =
+%   289.4794
+%  -288.2710
+%  -208.7799
 
 %%%
 %%% end main document
@@ -227,22 +281,9 @@ For this exercise perform the following tasks:
 % \appendix  %% include it, if something (bibliography, index, ...) follows below
 
 \begin{thebibliography}{XX}
-  \bibitem{HO}Laboratory Handout: \textit{Lab2--Color}. \\
+  \bibitem{HO}Laboratory Handout: \textit{Lab3--Camera Calibration}. \\
     Christoph Feichtenhofer and Thomas Höll, Winter--Term 2016/2017
 \end{thebibliography}
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%
-%%% bibliography
-%%%
-%%% available styles: abbrv, acm, alpha, apalike, ieeetr, plain, siam, unsrt
-%%%
-% \bibliographystyle{plain}
-
-%%% name of the bibliography file without .bib
-%%% e.g.: literatur.bib -> \bibliography{literatur}
-% \bibliography{FIXXME}
 
 \end{document}
 
