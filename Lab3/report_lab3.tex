@@ -117,7 +117,9 @@ The data can be exported as \textit{cameraParameters}-object to be used by Matla
 \end{figure}
 
 \subsection{Discussion}
-{ \color{red} TODO }
+The used model allows to undistort images affected by lens distortion, but a lot of data is needed to fit the model parameters. The reference checkerboard features many corners for this.
+
+The tool is really easy to use. Once calibrated, pictures taken by the camera can be easily distorted and used for future measurements.
 
 \FloatBarrier
 \section{Stereo Calibration}
@@ -241,21 +243,23 @@ And plotted using the \lstinline{drawEpipolarLine()} function.
 
 \subsection{Problem statement}
 
-Using RQ-decomposition we can decompose M = KR into K and R.
+Using RQ-decomposition we can decompose $M = KR$ into $K$ and $R$.
 For this exercise perform the following tasks:
 
 \begin{enumerate}
- \item Using the 3d target, acquire n = 6 images.
- \item Compute the projection matrix P using the given Matlab framework.
- \item Decompose the projection matrix P to get:
+ \item Using the 3d target, acquire $n = 6$ images.
+ \item Compute the projection matrix $P$ using the given Matlab framework.
+ \item Decompose the projection matrix $P$ to get:
  \begin{itemize}
-  \item The camera center C in the world coordinate frame.
-  \item The camera calibration matrix K.
-  \item The rotation matrix R that represents the orientation of the camera coordinate frame.
+  \item The camera center $C$ in the world coordinate frame.
+  \item The camera calibration matrix $K$.
+  \item The rotation matrix $R$ that represents the orientation of the camera coordinate frame.
  \end{itemize}
 \end{enumerate}
 
-% K,R and C matrizes
+\subsection{Solution}
+
+%%% K,R and C matrizes
 % >> K
 % K =
 %    1.0e+03 *
@@ -273,15 +277,19 @@ For this exercise perform the following tasks:
 %  -288.2710
 %  -208.7799
 
-%%%
-%%% end main document
-%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% f = 18.2559
 
-% \appendix  %% include it, if something (bibliography, index, ...) follows below
+\begin{figure}[ht]
+ \centering
+ \includegraphics[width=0.6\textwidth,clip,trim=10cm 5cm 15cm 15cm]{ccm_recalculated.png}
+ \caption{Recalculated reference position (red) and calibration position (blue)}
+ \label{fig:camPro_recalc}
+\end{figure}
+
+\subsection{Discussion}
 
 \begin{thebibliography}{XX}
-  \bibitem{HO}Laboratory Handout: \textit{Lab3--Camera Calibration}. \\
+  \bibitem{HO}Laboratory Handout: \textit{Lab3--Geometry}. \\
     Christoph Feichtenhofer and Thomas Höll, Winter--Term 2016/2017
 \end{thebibliography}
 
